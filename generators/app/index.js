@@ -1,27 +1,37 @@
 'use strict';
+
 var yeoman = require('yeoman-generator');
-var chalk = require('chalk');
-var yosay = require('yosay');
+var chalk  = require('chalk');
+var yosay  = require('yosay');
 
 module.exports = yeoman.generators.Base.extend({
+
   prompting: function () {
     var done = this.async();
 
-    // Have Yeoman greet the user.
     this.log(yosay(
       'Welcome to the terrific ' + chalk.red('ItpApiProjectSetupNode') + ' generator!'
     ));
 
     var prompts = [{
+      type: 'input',
+      name: 'appName',
+      message: 'What is your app\'s name ?',
+      default: 'itp-myProject-api-node'
+    },
+    {
       type: 'confirm',
-      name: 'someOption',
-      message: 'Would you like to enable this option?',
+      name: 'createProjectDirectory',
+      message: 'Would you like to create a new directory for your project?',
       default: true
     }];
 
     this.prompt(prompts, function (props) {
       this.props = props;
-      // To access props later use this.props.someOption;
+
+      if (this.props.createProjectDirectory) {
+        this.destinationRoot(this.props.appName);
+      }
 
       done();
     }.bind(this));
