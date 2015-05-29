@@ -3,6 +3,7 @@
 var yeoman = require('yeoman-generator');
 var chalk  = require('chalk');
 var yosay  = require('yosay');
+var mkdirp = require('mkdirp');
 
 module.exports = yeoman.generators.Base.extend({
 
@@ -47,6 +48,25 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('_bower.json'),
         this.destinationPath('bower.json')
       );
+    scaffoldFolders: function() {
+      mkdirp(this.destinationPath('app'));
+      mkdirp(this.destinationPath('config'));
+      mkdirp(this.destinationPath('controllers'));
+      mkdirp(this.destinationPath('logs'));
+      mkdirp(this.destinationPath('public'));
+      mkdirp(this.destinationPath('routes'));
+      mkdirp(this.destinationPath('schemas'));
+      mkdirp(this.destinationPath('utils'));
+    },
+
+    copyMainFiles: function () {
+
+      var context = {
+        appName: this.props.appName
+      };
+
+      this.template('_package.json', 'package.json', context);
+
     },
 
     projectfiles: function () {
