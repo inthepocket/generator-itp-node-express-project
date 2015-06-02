@@ -1,5 +1,14 @@
 {
   "name": "<%= appName %>",
   "version": "1.0.0",
-  "dependencies": {}
+  "main": "server.js",
+  "dependencies": {
+    "express": "latest",
+    "config": "latest",
+    "log4js": "latest",
+    "body-parser": "latest",
+    "tv4": "latest",
+    "moment": "latest",
+    "underscore": "latest"
+  }
 }
