@@ -1,14 +1,14 @@
 {
-  "name": "generator-itp-api-project-setup-node",
-  "version": "0.0.0",
-  "description": "Yeoman generator",
+  "name": "generator-itp-node-express-project",
+  "version": "1.0.0",
+  "description": "Yeoman generator for the ITP Express project",
   "license": "MIT",
   "main": "app/index.js",
-  "repository": "jonathandemoor/generator-itp-api-project-setup-node",
+  "repository": "inthepocket/generator-itp-node-express-project",
   "author": {
-    "name": "",
-    "email": "",
-    "url": "https://github.com/jonathandemoor"
+    "name": "In The Pocket",
+    "email": "hello@inthepocket.mobi",
+    "url": "https://github.com/inthepocket"
   },
   "scripts": {
     "test": "mocha"
