@@ -31,5 +31,5 @@ npm install -g generator-itp-node-express-project
 Finally, initiate the generator:
 
 ```bash
-yo itp-api-project-setup-node
+yo itp-node-express-project
 ```

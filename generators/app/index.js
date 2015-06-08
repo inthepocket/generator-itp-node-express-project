@@ -11,14 +11,14 @@ module.exports = yeoman.generators.Base.extend({
     var done = this.async();
 
     this.log(yosay(
-      'Welcome to the terrific ' + chalk.red('ItpApiProjectSetupNode') + ' generator!'
+      'Welcome to the terrific ' + chalk.red('ITP Node Express project') + ' generator!'
     ));
 
     var prompts = [{
       type: 'input',
       name: 'appName',
       message: 'What is your app\'s name ?',
-      default: 'itp-myProject-api-node'
+      default: 'itp-myProject-node'
     },
     {
       type: 'confirm',
