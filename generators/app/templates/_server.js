@@ -1,11 +1,24 @@
-var express    = require('express');
+var express    = require('express');<% if (useMongoose) { %>
+var mongoose   = require('mongoose');<% } %>
 var bodyParser = require('body-parser');
 var path       = require('path');
 var log4js     = require('log4js');<% if (apiInfoRoute) { %>
 var routerV1   = require('./routes/router_v1');<% } %>
 var logger     = require('./utils/logger');
 
-var port       = process.env.PORT || 3000;
+var port       = process.env.PORT || 3000;<% if (useMongoose) { %>
+var dbUrl      = process.env.MONGO_URI || 'mongodb://localhost/<%= appName %>';
+var dbOptions  = { server: { socketOptions: { keepAlive: 1 } } };
+
+// Connect to mongodb
+var connect = function() {
+  mongoose.connect(dbUrl, dbOptions);
+};
+
+connect();
+
+mongoose.connection.on('error', console.error);
+mongoose.connection.on('disconnected', connect);<% } %>
 
 // Globals
 global.appRootPath = path.resolve(__dirname);

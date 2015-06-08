@@ -42,6 +42,12 @@ module.exports = yeoman.generators.Base.extend({
       name: 'apiInfoRoute',
       message: 'Create test/info api route?',
       default: true
+    },
+    {
+      type: 'confirm',
+      name: 'useMongoose',
+      message: 'Would you like to include Mongoose in your project?',
+      default: true
     }];
 
     this.prompt(prompts, function (props) {
@@ -67,29 +73,26 @@ module.exports = yeoman.generators.Base.extend({
       mkdirp(this.destinationPath('logs'));
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
-      mkdirp(this.destinationPath('schemas'));
       mkdirp(this.destinationPath('utils'));
+
+      if (this.props.useMongoose) {
+        mkdirp(this.destinationPath('schemas'));
+      }
     },
 
     copyMainFiles: function () {
       this.log(chalk.blue('- Copy main files.'));
 
-      var context = {
-        appName: this.props.appName,
-        documentationUrl: this.props.documentationUrl,
-        sshRepoPath: this.props.sshRepoPath,
-      };
-
       this.template(
         this.templatePath('_README.md'),
         this.destinationPath('README.md'),
-        context
+        this.props
       );
 
       this.template(
         this.templatePath('_package.json'),
         this.destinationPath('package.json'),
-        context
+        this.props
       );
 
       this.fs.copy(
@@ -101,50 +104,60 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('jshintrc'),
         this.destinationPath('.jshintrc')
       );
+
+      this.fs.copy(
+        this.templatePath('gitignore'),
+        this.destinationPath('.gitignore')
+      );
     },
 
     copyProjectfiles: function () {
       this.log(chalk.blue('- Copy project files.'));
 
-      var context = {
-        appName: this.props.appName,
-        documentationUrl: this.props.documentationUrl,
-        sshRepoPath: this.props.sshRepoPath,
-        apiInfoRoute: this.props.apiInfoRoute
-      };
-
       // Config files
       this.template(
         this.templatePath('config/_default.json'),
         this.destinationPath('config/default.json'),
-        context
+        this.props
       );
 
       this.template(
         this.templatePath('config/_staging.json'),
         this.destinationPath('config/staging.json'),
-        context
+        this.props
       );
 
       this.template(
         this.templatePath('config/_production.json'),
         this.destinationPath('config/production.json'),
-        context
+        this.props
       );
 
       // Utils
-
       this.template(
         this.templatePath('utils/_logger.js'),
         this.destinationPath('utils/logger.js'),
-        context
+        this.props
       );
+
+      // DB
+      if (this.props.useMongoose) {
+        this.fs.copy(
+          this.templatePath('schemas/_index.js'),
+          this.destinationPath('schemas/index.js')
+        );
+
+        this.fs.copy(
+          this.templatePath('schemas/_sample_schema.js'),
+          this.destinationPath('schemas/sample_schema.js')
+        );
+      }
 
       // Project files
       this.template(
         this.templatePath('_server.js'),
         this.destinationPath('server.js'),
-        context
+        this.props
       );
 
       if (this.props.apiInfoRoute) {

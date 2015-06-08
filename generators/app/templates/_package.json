@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "main": "server.js",
   "dependencies": {
-    "express": "latest",
+    "express": "latest",<% if (useMongoose) { %>
+    "mongoose": "latest",<% } %>
     "config": "latest",
     "log4js": "latest",
     "body-parser": "latest",
     "tv4": "latest",
     "moment": "latest",
     "underscore": "latest"
+  },
+  "devDependencies": {
+    "gulp": "latest",
+    "gulp-nodemon": "latest"
   }
 }
