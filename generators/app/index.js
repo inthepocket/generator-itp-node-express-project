@@ -106,6 +106,11 @@ module.exports = yeoman.generators.Base.extend({
       );
 
       this.fs.copy(
+        this.templatePath('_gulpfile.js'),
+        this.destinationPath('gulpfile.js')
+      );
+
+      this.fs.copy(
         this.templatePath('editorconfig'),
         this.destinationPath('.editorconfig')
       );
