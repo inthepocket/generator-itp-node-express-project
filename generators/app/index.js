@@ -175,11 +175,22 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   install: function () {
+    // Install npm packages
+    this.spawnCommand('npm', ['install', 'express', '--save']);
+    this.spawnCommand('npm', ['install', 'ejs', '--save']);
 
-    this.installDependencies({
-      bower: false,
-      npm: true,
-      callback: null
-    });
+    if (this.props.useMongoose) {
+      this.spawnCommand('npm', ['install', 'mongoose', '--save']);
+    }
+    
+    this.spawnCommand('npm', ['install', 'config', '--save']);
+    this.spawnCommand('npm', ['install', 'log4js', '--save']);
+    this.spawnCommand('npm', ['install', 'body-parser', '--save']);
+    this.spawnCommand('npm', ['install', 'tv4', '--save']);
+    this.spawnCommand('npm', ['install', 'underscore', '--save']);
+    this.spawnCommand('npm', ['install', 'moment', '--save']);
+
+    this.spawnCommand('npm', ['install', 'gulp', '--save-dev']);
+    this.spawnCommand('npm', ['install', 'gulp-nodemon', '--save-dev']);
   }
 });
