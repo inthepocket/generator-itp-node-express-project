@@ -35,7 +35,7 @@ module.exports = yeoman.generators.Base.extend({
       type: 'input',
       name: 'sshRepoPath',
       message: 'Wat is the SSH repo path of the project?',
-      default: 'git@bitbucket.org:inthepocket/itp-myProject-api-node.git'
+      default: 'git@bitbucket.org:inthepocket/itp-myProject-node.git'
     },
     {
       type: 'confirm',
@@ -47,6 +47,12 @@ module.exports = yeoman.generators.Base.extend({
       type: 'confirm',
       name: 'useMongoose',
       message: 'Would you like to include Mongoose in your project?',
+      default: true
+    },
+    {
+      type: 'confirm',
+      name: 'includeEjsTemplateEngine',
+      message: 'Would you like to include EJS (template engine) in your project?',
       default: true
     }];
 
@@ -74,6 +80,10 @@ module.exports = yeoman.generators.Base.extend({
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
       mkdirp(this.destinationPath('utils'));
+
+      if (this.props.includeEjsTemplateEngine) {
+        mkdirp(this.destinationPath('views'));
+      }
 
       if (this.props.useMongoose) {
         mkdirp(this.destinationPath('schemas'));
@@ -133,6 +143,20 @@ module.exports = yeoman.generators.Base.extend({
         this.props
       );
 
+      // Views - template engine EJS
+      if (this.props.includeEjsTemplateEngine) {
+        this.fs.copy(
+          this.templatePath('routes/_app_router.js'),
+          this.destinationPath('routes/app_router.js')
+        );
+
+        this.template(
+          this.templatePath('views/_index.ejs'),
+          this.destinationPath('views/index.ejs'),
+          this.props
+        );
+      }
+
       // Utils
       this.template(
         this.templatePath('utils/_logger.js'),
@@ -162,8 +186,8 @@ module.exports = yeoman.generators.Base.extend({
 
       if (this.props.apiInfoRoute) {
         this.fs.copy(
-          this.templatePath('routes/_router_v1.js'),
-          this.destinationPath('routes/router_v1.js')
+          this.templatePath('routes/_api_router_v1.js'),
+          this.destinationPath('routes/api_router_v1.js')
         );
 
         this.fs.copy(
