@@ -29,7 +29,8 @@ module.exports = yeoman.generators.Base.extend({
     {
       type: 'input',
       name: 'documentationUrl',
-      message: 'What is the project url on Confluence?'
+      message: 'What is the project url on Confluence?',
+      default: 'https://confluence.itpservices.be/display/itp-myProject-node'
     },
     {
       type: 'input',
@@ -211,7 +212,7 @@ module.exports = yeoman.generators.Base.extend({
     if (this.props.useMongoose) {
       this.spawnCommand('npm', ['install', 'mongoose', '--save']);
     }
-    
+
     this.spawnCommand('npm', ['install', 'config', '--save']);
     this.spawnCommand('npm', ['install', 'log4js', '--save']);
     this.spawnCommand('npm', ['install', 'body-parser', '--save']);
