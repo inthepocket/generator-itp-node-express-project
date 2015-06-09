@@ -8,8 +8,7 @@
 <% } %>
 <% if (sshRepoPath) { %>Clone this project:
 
-    git clone <%= sshRepoPath %>
-<% } %>
+    git clone <%= sshRepoPath %><% } %>
 
 Install Node.js
 
@@ -27,3 +26,11 @@ Install npm dependencies
 ---
 
 ./logs
+
+<% if (includeUnitTesting) { %>### Unit tests
+---
+Test JavaScript framework Mocha: http://mochajs.org
+
+Run Unit tests
+
+    npm test<% } %>
