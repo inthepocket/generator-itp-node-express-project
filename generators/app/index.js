@@ -61,6 +61,12 @@ module.exports = yeoman.generators.Base.extend({
       name: 'includeUnitTesting',
       message: 'Would you like to include Unit Testing in your project? ',
       default: true
+    },
+    {
+      type: 'confirm',
+      name: 'includeCapistrano',
+      message: 'Would you like to include Capistrano in your project? ',
+      default: true
     }];
 
     this.prompt(prompts, function (props) {
@@ -87,6 +93,10 @@ module.exports = yeoman.generators.Base.extend({
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
       mkdirp(this.destinationPath('utils'));
+
+      if (this.props.includeCapistrano) {
+        mkdirp(this.destinationPath('config/deploy'));
+      }
 
       if (this.props.includeEjsTemplateEngine) {
         mkdirp(this.destinationPath('views'));
@@ -135,6 +145,31 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('gitignore'),
         this.destinationPath('.gitignore')
       );
+
+      if (this.props.includeCapistrano) {
+        this.fs.copy(
+          this.templatePath('_Capfile'),
+          this.destinationPath('Capfile')
+        );
+
+        this.template(
+          this.templatePath('config/_deploy.rb'),
+          this.destinationPath('config/deploy.rb'),
+          this.props
+        );
+
+        this.template(
+          this.templatePath('config/deploy/_staging.rb'),
+          this.destinationPath('config/deploy/staging.rb'),
+          this.props
+        );
+
+        this.template(
+          this.templatePath('config/deploy/_production.rb'),
+          this.destinationPath('config/deploy/production.rb'),
+          this.props
+        );
+      }
     },
 
     copyProjectfiles: function () {
@@ -240,7 +275,7 @@ module.exports = yeoman.generators.Base.extend({
     if (this.props.useMongoose) {
       this.spawnCommand('npm', ['install', 'mongoose', '--save']);
     }
-    
+
     // Dev dependencies
     this.spawnCommand('npm', ['install', 'gulp', '--save-dev']);
     this.spawnCommand('npm', ['install', 'gulp-nodemon', '--save-dev']);
