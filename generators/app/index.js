@@ -29,12 +29,12 @@ module.exports = yeoman.generators.Base.extend({
     {
       type: 'input',
       name: 'documentationUrl',
-      message: 'Wat is the project url on Confluence?'
+      message: 'What is the project url on Confluence?'
     },
     {
       type: 'input',
       name: 'sshRepoPath',
-      message: 'Wat is the SSH repo path of the project?',
+      message: 'What is the SSH repo path of the project?',
       default: 'git@bitbucket.org:inthepocket/itp-myProject-node.git'
     },
     {
