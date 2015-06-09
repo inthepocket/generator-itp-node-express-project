@@ -55,6 +55,12 @@ module.exports = yeoman.generators.Base.extend({
       name: 'includeEjsTemplateEngine',
       message: 'Would you like to include EJS (template engine) in your project?',
       default: true
+    },
+    {
+      type: 'confirm',
+      name: 'includeUnitTesting',
+      message: 'Would you like to include Unit Testing in your project? ',
+      default: true
     }];
 
     this.prompt(prompts, function (props) {
@@ -88,6 +94,10 @@ module.exports = yeoman.generators.Base.extend({
 
       if (this.props.useMongoose) {
         mkdirp(this.destinationPath('schemas'));
+      }
+
+      if (this.props.includeUnitTesting) {
+        mkdirp(this.destinationPath('test'));
       }
     },
 
@@ -183,6 +193,14 @@ module.exports = yeoman.generators.Base.extend({
         );
       }
 
+      // Unit testing
+      if (this.props.includeUnitTesting) {
+        this.fs.copy(
+          this.templatePath('test/_sample_test.js'),
+          this.destinationPath('test/sample_test.js')
+        );
+      }
+
       // Project files
       this.template(
         this.templatePath('_server.js'),
@@ -222,5 +240,10 @@ module.exports = yeoman.generators.Base.extend({
 
     this.spawnCommand('npm', ['install', 'gulp', '--save-dev']);
     this.spawnCommand('npm', ['install', 'gulp-nodemon', '--save-dev']);
+
+    if (this.props.includeUnitTesting) {
+      this.spawnCommand('npm', ['install', 'mocha', '--save-dev']);
+      this.spawnCommand('npm', ['install', 'supertest', '--save-dev']);
+    }
   }
 });
