@@ -22,6 +22,13 @@ Install npm dependencies
 
     npm install
 
+### Run project
+---
+
+This project uses Gulp as build system
+
+    gulp dev
+
 ### Log files
 ---
 
