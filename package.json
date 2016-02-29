@@ -20,12 +20,12 @@
     "yeoman-generator"
   ],
   "dependencies": {
-    "chalk": "^1.0.0",
-    "mkdirp": "^0.5.1",
-    "yeoman-generator": "^0.19.0",
-    "yosay": "^1.0.2"
+    "chalk": "~1.1.0",
+    "mkdirp": "~0.5.1",
+    "yeoman-generator": "~0.22.5",
+    "yosay": "~1.1.0"
   },
   "devDependencies": {
-    "mocha": "*"
+    "mocha": "~2.4.5"
   }
 }
