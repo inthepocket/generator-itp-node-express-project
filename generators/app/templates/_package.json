@@ -1,8 +1,9 @@
 {
   "name": "<%= appName %>",
-  "version": "1.0.0",<% if (sshRepoPath) { %>
+  "version": "0.0.0",<% if (sshRepoPath) { %>
   "repository": "<%= sshRepoPath %>",<% } %>
   "main": "server.js",
+  "license": "UNLICENSED",
   "scripts": {
     "start": "node server.js",
     "test": "./node_modules/.bin/mocha"
