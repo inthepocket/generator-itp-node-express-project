@@ -1,11 +1,11 @@
 'use strict';
 
-const yeoman = require('yeoman-generator');
+const generators = require('yeoman-generator');
 const chalk  = require('chalk');
 const yosay  = require('yosay');
 const mkdirp = require('mkdirp');
 
-module.exports = yeoman.generators.Base.extend({
+module.exports = generators.Base.extend({
 
   prompting: function () {
     const done = this.async();
