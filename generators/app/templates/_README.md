@@ -1,7 +1,7 @@
-##<%= appName %>
+# <%= appName %>
 
-### Project setup
----
+## Project setup
+
 <% if (documentationUrl) { %>Documentation on Confluence:
 
     <%= documentationUrl %>
@@ -22,20 +22,18 @@ Install npm dependencies
 
     npm install
 
-### Run project
----
+## Run project
 
 This project uses Gulp as build system
 
     gulp dev
 
-### Log files
----
+## Log files
 
 ./logs
 
-<% if (includeUnitTesting) { %>### Unit tests
----
+<% if (includeUnitTesting) { %>## Unit tests
+
 Test JavaScript framework Mocha: http://mochajs.org
 
 Run Unit tests
