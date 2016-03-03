@@ -1,20 +1,20 @@
 'use strict';
 
-var yeoman = require('yeoman-generator');
-var chalk  = require('chalk');
-var yosay  = require('yosay');
-var mkdirp = require('mkdirp');
+const yeoman = require('yeoman-generator');
+const chalk  = require('chalk');
+const yosay  = require('yosay');
+const mkdirp = require('mkdirp');
 
 module.exports = yeoman.generators.Base.extend({
 
   prompting: function () {
-    var done = this.async();
+    const done = this.async();
 
     this.log(yosay(
       'Welcome to the terrific ' + chalk.red('ITP Node Express project') + ' generator!'
     ));
 
-    var prompts = [{
+    const prompts = [{
       type: 'input',
       name: 'appName',
       message: 'What is your app\'s name ?',
@@ -172,7 +172,7 @@ module.exports = yeoman.generators.Base.extend({
       }
     },
 
-    copyProjectfiles: function () {
+    copyProjectfiles: function() {
       this.log(chalk.blue('- Copy project files.'));
 
       // Config files
@@ -269,7 +269,6 @@ module.exports = yeoman.generators.Base.extend({
     this.spawnCommand('npm', ['install', 'log4js', '--save']);
     this.spawnCommand('npm', ['install', 'body-parser', '--save']);
     this.spawnCommand('npm', ['install', 'tv4', '--save']);
-    this.spawnCommand('npm', ['install', 'underscore', '--save']);
     this.spawnCommand('npm', ['install', 'moment', '--save']);
 
     if (this.props.useMongoose) {
