@@ -1,19 +1,16 @@
-var assert = require('assert');
+const assert = require('chai').assert;
 
 // Test data
-var fooData = "bar";
+const fooData = 'bar';
 
-// Start test
-describe('Start sample tests: ', function() {
+describe('Start sample tests: ', () => {
 
-  describe('[TEST 01] Sample test 1: ', function() {
-
-    it('Should return valid result', function() {
-      var result = { foo: "bar" };
+  describe('[TEST 01] Sample test 1: ', () => {
+    it('Should return valid result', () => {
+      const result = {foo: 'bar'};
 
       assert.equal(result.foo, fooData, 'Foo is invalid: ' + result.foo);
     });
-
   });
 
 });

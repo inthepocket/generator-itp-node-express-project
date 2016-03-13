@@ -260,28 +260,27 @@ module.exports = generators.Base.extend({
   install: function () {
     this.log(chalk.blue('- Install npm packages'));
 
-    // Install npm packages
     this.spawnCommand('npm', ['config', 'set', 'save-prefix="~"']);
 
-    this.spawnCommand('npm', ['install', 'express', '--save']);
-    this.spawnCommand('npm', ['install', 'ejs', '--save']);
-    this.spawnCommand('npm', ['install', 'config', '--save']);
-    this.spawnCommand('npm', ['install', 'log4js', '--save']);
-    this.spawnCommand('npm', ['install', 'body-parser', '--save']);
-    this.spawnCommand('npm', ['install', 'tv4', '--save']);
-    this.spawnCommand('npm', ['install', 'moment', '--save']);
+    this.npmInstall('express', {save: true});
+    this.npmInstall('ejs', {save: true});
+    this.npmInstall('config', {save: true});
+    this.npmInstall('log4js', {save: true});
+    this.npmInstall('body-parser', {save: true});
+    this.npmInstall('tv4', {save: true});
+    this.npmInstall('moment', {save: true});
 
     if (this.props.useMongoose) {
-      this.spawnCommand('npm', ['install', 'mongoose', '--save']);
+      this.npmInstall('mongoose', {save: true});
     }
 
     // Dev dependencies
-    this.spawnCommand('npm', ['install', 'gulp', '--save-dev']);
-    this.spawnCommand('npm', ['install', 'gulp-nodemon', '--save-dev']);
+    this.npmInstall('gulp', {'save-dev': true});
+    this.npmInstall('gulp-nodemon', {'save-dev': true});
 
     if (this.props.includeUnitTesting) {
-      this.spawnCommand('npm', ['install', 'mocha', '--save-dev']);
-      this.spawnCommand('npm', ['install', 'supertest', '--save-dev']);
+      this.npmInstall('mocha', {'save-dev': true});
+      this.npmInstall('supertest', {'save-dev': true});
     }
   }
 });
