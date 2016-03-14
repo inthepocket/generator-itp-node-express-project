@@ -1,24 +1,22 @@
-'use strict';
+const path = require('path');
+const assert = require('yeoman-assert');
+const helpers = require('yeoman-test');
 
-var path = require('path');
-var assert = require('yeoman-generator').assert;
-var helpers = require('yeoman-generator').test;
-var os = require('os');
-
-describe('itp-node-express-project:app', function () {
-  before(function (done) {
+describe('itp-node-express-project:app', () => {
+  before(function(done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
       .withPrompts({ someOption: true })
       .on('end', done);
   });
 
-  it('creates files', function () {
+  it('creates files', function(done) {
     assert.file([
-      'bower.json',
       'package.json',
       '.editorconfig',
       '.jshintrc'
     ]);
+
+    done();
   });
 });

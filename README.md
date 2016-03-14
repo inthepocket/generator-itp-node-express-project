@@ -28,6 +28,14 @@ To install generator-itp-node-express-project from npm, run:
 npm install -g generator-itp-node-express-project
 ```
 
+Alternatively, you can clone the repo and then link it to your local npm repository (this will also compile any changes you make to the local repo):
+
+```bash
+git clone https://github.com/inthepocket/generator-itp-node-express-project
+
+npm link
+```
+
 Finally, initiate the generator:
 
 ```bash

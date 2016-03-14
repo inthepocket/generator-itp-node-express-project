@@ -10,7 +10,7 @@
 
     git clone <%= sshRepoPath %><% } %>
 
-Install Node.js
+Install Node.js (the minimum expected version for this project is v4)
 
     http://nodejs.org
 
@@ -24,18 +24,18 @@ Install npm dependencies
 
 ## Run project
 
-This project uses Gulp as build system
+This project uses [Gulp](http://gulpjs.com/) as build system. The default task is "dev".
 
-    gulp dev
+    gulp [dev]
 
 ## Log files
 
-./logs
+Logging is implemented with [log4js](https://github.com/nomiddlename/log4js-node) and files are stored
+in `./logs`
 
 <% if (includeUnitTesting) { %>## Unit tests
 
-Test JavaScript framework Mocha: http://mochajs.org
-
-Run Unit tests
+The test framework [Mocha](http://mochajs.org) is used in this project. Tests are found in `./test` and
+can be run via:
 
     npm test<% } %>
