@@ -1,9 +1,9 @@
-var express       = require('express');
-var apiController = require('../controllers/api_controller');
+const express       = require('express');
+const apiController = require('../controllers/api_controller');
 
-var router        = express.Router();
+const router = express.Router();
 
-// Api routes
+// Define API routes
 router.get('/info', apiController.info);
 
 module.exports = router;
