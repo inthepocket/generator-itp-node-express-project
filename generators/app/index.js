@@ -281,6 +281,7 @@ module.exports = generators.Base.extend({
     if (this.props.includeUnitTesting) {
       this.npmInstall('mocha', {'save-dev': true});
       this.npmInstall('supertest', {'save-dev': true});
+      this.npmInstall('chai', {'save-dev': true})
     }
   }
 });
