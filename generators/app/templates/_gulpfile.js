@@ -1,4 +1,4 @@
-const gulp    = require('gulp');
+const gulp = require('gulp');
 const nodemon = require('gulp-nodemon');
 
 gulp.task('nodemon', function () {
@@ -11,5 +11,5 @@ gulp.task('nodemon', function () {
   });
 });
 
-gulp.task('default', ['nodemon']);
+gulp.task('default', ['dev']);
 gulp.task('dev', ['nodemon']);
