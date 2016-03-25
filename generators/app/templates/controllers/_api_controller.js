@@ -1,5 +1,5 @@
 const config = require('config');
-const logger = require('../utils/logger');
+const winston = require('winston');
 
 /**
  * @api {get} /info  info
@@ -22,8 +22,8 @@ const ApiController = {
   info: function (req, res) {
 
     // Test logging
-    logger.info('[ApiController] Info test log');
-    logger.error('[ApiController] Error test log');
+    winston.info('[ApiController] Info test log');
+    winston.error('[ApiController] Error test log');
 
     // Load app name from the config file
     var appName = 'App name';

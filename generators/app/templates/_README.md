@@ -30,8 +30,7 @@ This project uses [Gulp](http://gulpjs.com/) as build system. The default task i
 
 ## Log files
 
-Logging is implemented with [log4js](https://github.com/nomiddlename/log4js-node) and files are stored
-in `./logs`
+Logging is implemented with [winston](https://github.com/winstonjs/winston) and files are stored in `./logs`
 
 <% if (includeUnitTesting) { %>## Unit tests
 
