@@ -54,7 +54,7 @@ module.exports = generators.Base.extend({
       type: 'confirm',
       name: 'includeEjsTemplateEngine',
       message: 'Would you like to include EJS (template engine) in your project?',
-      default: true,
+      default: false,
     },
     {
       type: 'confirm',
