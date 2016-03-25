@@ -4,21 +4,21 @@ const Schema   = mongoose.Schema;
 const SampleSchema = new Schema({
   name: {
     required: true,
-    type: String
+    type: String,
   },
   createdAt: {
     type: Date,
     default: Date.now,
-    required: true
+    required: true,
   },
   updatedAt:  {
     type: Date,
     default: Date.now,
-    required: true
+    required: true,
   }
 });
 
-SampleSchema.pre('save', function(next) {
+SampleSchema.pre('save', function (next) {
   if (!this.isModified('updatedAt')) {
     this.updatedAt = new Date();
   }

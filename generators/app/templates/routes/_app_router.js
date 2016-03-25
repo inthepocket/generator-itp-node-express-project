@@ -3,7 +3,7 @@ const express = require('express');
 const router  = express.Router();
 
 // Define app routes
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
   res.render('index');
 });
 

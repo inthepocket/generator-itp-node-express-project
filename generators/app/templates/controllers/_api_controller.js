@@ -2,7 +2,7 @@ const config = require('config');
 const logger = require('../utils/logger');
 
 const ApiController = {
-  info: function(req, res) {
+  info: function (req, res) {
 
     // Test logging
     logger.info('[ApiController] Info test log');
@@ -16,7 +16,7 @@ const ApiController = {
     }
 
     res.send(appName + ': v1');
-  }
-}
+  },
+};
 
 module.exports = ApiController;

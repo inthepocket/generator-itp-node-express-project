@@ -18,55 +18,55 @@ module.exports = generators.Base.extend({
       type: 'input',
       name: 'appName',
       message: 'What is your app\'s name ?',
-      default: 'itp-myProject-node'
+      default: 'itp-myProject-node',
     },
     {
       type: 'confirm',
       name: 'createProjectDirectory',
       message: 'Would you like to create a new directory for your project?',
-      default: true
+      default: true,
     },
     {
       type: 'input',
       name: 'documentationUrl',
       message: 'What is the project url on Confluence?',
-      default: 'https://confluence.itpservices.be/display/itp-myProject-node'
+      default: 'https://confluence.itpservices.be/display/itp-myProject-node',
     },
     {
       type: 'input',
       name: 'sshRepoPath',
       message: 'What is the SSH repo path of the project?',
-      default: 'git@bitbucket.org:inthepocket/itp-myProject-node.git'
+      default: 'git@bitbucket.org:inthepocket/itp-myProject-node.git',
     },
     {
       type: 'confirm',
       name: 'apiInfoRoute',
       message: 'Create test/info api route?',
-      default: true
+      default: true,
     },
     {
       type: 'confirm',
       name: 'useMongoose',
       message: 'Would you like to include Mongoose in your project?',
-      default: true
+      default: true,
     },
     {
       type: 'confirm',
       name: 'includeEjsTemplateEngine',
       message: 'Would you like to include EJS (template engine) in your project?',
-      default: true
+      default: true,
     },
     {
       type: 'confirm',
       name: 'includeUnitTesting',
       message: 'Would you like to include Unit Testing in your project? ',
-      default: true
+      default: true,
     },
     {
       type: 'confirm',
       name: 'includeCapistrano',
       message: 'Would you like to include Capistrano in your project? ',
-      default: true
+      default: true,
     }];
 
     this.prompt(prompts, function (props) {
@@ -82,7 +82,7 @@ module.exports = generators.Base.extend({
   },
 
   writing: {
-    scaffoldFolders: function() {
+    scaffoldFolders: function () {
       this.log('\n');
       this.log(chalk.blue('- Create project directory structure.'));
 
@@ -172,7 +172,7 @@ module.exports = generators.Base.extend({
       }
     },
 
-    copyProjectfiles: function() {
+    copyProjectfiles: function () {
       this.log(chalk.blue('- Copy project files.'));
 
       // Config files
@@ -254,7 +254,7 @@ module.exports = generators.Base.extend({
           this.destinationPath('controllers/api_controller.js')
         );
       }
-    }
+    },
   },
 
   install: function () {
@@ -262,26 +262,27 @@ module.exports = generators.Base.extend({
 
     this.spawnCommand('npm', ['config', 'set', 'save-prefix="~"']);
 
-    this.npmInstall('express', {save: true});
-    this.npmInstall('ejs', {save: true});
-    this.npmInstall('config', {save: true});
-    this.npmInstall('log4js', {save: true});
-    this.npmInstall('body-parser', {save: true});
-    this.npmInstall('tv4', {save: true});
-    this.npmInstall('moment', {save: true});
+    this.npmInstall('express', { save: true });
+    this.npmInstall('ejs', { save: true });
+    this.npmInstall('config', { save: true });
+    this.npmInstall('log4js', { save: true });
+    this.npmInstall('body-parser', { save: true });
+    this.npmInstall('tv4', { save: true });
+    this.npmInstall('moment', { save: true });
 
     if (this.props.useMongoose) {
-      this.npmInstall('mongoose', {save: true});
+      this.npmInstall('mongoose', { save: true });
     }
 
     // Dev dependencies
-    this.npmInstall('gulp', {'save-dev': true});
-    this.npmInstall('gulp-nodemon', {'save-dev': true});
+    this.npmInstall('gulp', { 'save-dev': true });
+    this.npmInstall('gulp-nodemon', { 'save-dev': true });
+    this.npmInstall('gulp-apidoc', { 'save-dev': true });
 
     if (this.props.includeUnitTesting) {
-      this.npmInstall('mocha', {'save-dev': true});
-      this.npmInstall('supertest', {'save-dev': true});
-      this.npmInstall('chai', {'save-dev': true})
+      this.npmInstall('mocha', { 'save-dev': true });
+      this.npmInstall('supertest', { 'save-dev': true });
+      this.npmInstall('chai', { 'save-dev': true });
     }
-  }
+  },
 });
