@@ -194,6 +194,13 @@ module.exports = generators.Base.extend({
         this.props
       );
 
+      // Custom environment variables
+      this.template(
+        this.templatePath('config/_custom-environment-variables.json'),
+        this.destinationPath('config/custom-environment-variables.json'),
+        this.props
+      );
+
       // Views - template engine EJS
       if (this.props.includeEjsTemplateEngine) {
         this.fs.copy(
