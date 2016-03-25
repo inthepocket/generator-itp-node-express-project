@@ -1,6 +1,23 @@
 const config = require('config');
 const logger = require('../utils/logger');
 
+/**
+ * @api {get} /info  info
+ * @apiVersion 0.1.0
+ * @apiName info
+ * @apiGroup Info
+ * @apiDescription Sample api call
+ *
+ * @apiSuccess {String} appName  Name of the app
+ * @apiSuccess {String} version Api version
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "appName": "itp-myProject-node",
+ *       "version": "v1"
+ *     }
+ */
 const ApiController = {
   info: function (req, res) {
 
@@ -15,7 +32,12 @@ const ApiController = {
       appName = config.get('app.name');
     }
 
-    res.send(appName + ': v1');
+    const response = {
+      appName: appName,
+      version: 'v1',
+    };
+
+    res.json(response);
   },
 };
 

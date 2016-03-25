@@ -1,6 +1,6 @@
 {
   "name": "<%= appName %>",
-  "version": "0.0.0",<% if (sshRepoPath) { %>
+  "version": "0.1.0",<% if (sshRepoPath) { %>
   "repository": "<%= sshRepoPath %>",<% } %>
   "main": "server.js",
   "license": "UNLICENSED",

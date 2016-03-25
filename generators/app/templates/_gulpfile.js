@@ -1,5 +1,13 @@
 const gulp = require('gulp');
 const nodemon = require('gulp-nodemon');
+const apidoc = require('gulp-apidoc');
+
+gulp.task('apidoc', done => {
+  apidoc({
+    src: 'controllers/',
+    dest: 'public/docs/',
+  }, done);
+});
 
 gulp.task('nodemon', function () {
   nodemon({

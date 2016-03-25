@@ -39,3 +39,9 @@ The test framework [Mocha](http://mochajs.org) is used in this project. Tests ar
 can be run via:
 
     npm test<% } %>
+
+## Documentation
+
+API responses are documentated using the apidoc tool:
+
+    gulp apidoc
