@@ -48,7 +48,7 @@ module.exports = generators.Base.extend({
       type: 'confirm',
       name: 'useMongoose',
       message: 'Would you like to include Mongoose in your project?',
-      default: true,
+      default: false,
     },
     {
       type: 'confirm',
@@ -263,12 +263,15 @@ module.exports = generators.Base.extend({
     this.spawnCommand('npm', ['config', 'set', 'save-prefix="~"']);
 
     this.npmInstall('express', { save: true });
-    this.npmInstall('ejs', { save: true });
     this.npmInstall('config', { save: true });
     this.npmInstall('winston', { save: true });
     this.npmInstall('body-parser', { save: true });
     this.npmInstall('tv4', { save: true });
     this.npmInstall('moment', { save: true });
+
+    if (this.props.includeEjsTemplateEngine) {
+      this.npmInstall('ejs', { save: true });
+    }
 
     if (this.props.useMongoose) {
       this.npmInstall('mongoose', { save: true });
