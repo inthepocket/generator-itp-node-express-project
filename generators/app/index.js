@@ -84,7 +84,7 @@ module.exports = generators.Base.extend({
   writing: {
     scaffoldFolders: function () {
       this.log('\n');
-      this.log(chalk.blue('- Create project directory structure.'));
+      this.log(chalk.blue('- Create project directory structure'));
 
       mkdirp(this.destinationPath('app'));
       mkdirp(this.destinationPath('config'));
@@ -112,7 +112,7 @@ module.exports = generators.Base.extend({
     },
 
     copyMainFiles: function () {
-      this.log(chalk.blue('- Copy main files.'));
+      this.log(chalk.blue('- Copy main files'));
 
       this.template(
         this.templatePath('_README.md'),
@@ -173,7 +173,7 @@ module.exports = generators.Base.extend({
     },
 
     copyProjectfiles: function () {
-      this.log(chalk.blue('- Copy project files.'));
+      this.log(chalk.blue('- Copy project files'));
 
       // Config files
       this.template(
@@ -265,7 +265,7 @@ module.exports = generators.Base.extend({
   },
 
   install: function () {
-    this.log(chalk.blue('- Install npm packages'));
+    this.log(chalk.blue('- Install npm packages.'));
 
     this.spawnCommand('npm', ['config', 'set', 'save-prefix="~"']);
 
@@ -291,5 +291,9 @@ module.exports = generators.Base.extend({
       this.npmInstall('supertest', { 'save-dev': true });
       this.npmInstall('chai', { 'save-dev': true });
     }
+  },
+
+  end: function () {
+    this.log(chalk.blue('- Done 👊'));
   },
 });
