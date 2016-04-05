@@ -1,18 +1,17 @@
-var express     = require('express');<% if (useMongoose) { %>
-var mongoose    = require('mongoose');<% } %>
-var bodyParser  = require('body-parser');
-var path        = require('path');
-var log4js      = require('log4js');<% if (apiInfoRoute) { %>
-var apiRouterV1 = require('./routes/api_router_v1');<% } if (includeEjsTemplateEngine) { %>
-var appRouter   = require('./routes/app_router');<% } %>
-var logger      = require('./utils/logger');
+const express     = require('express');<% if (useMongoose) { %>
+const mongoose    = require('mongoose');<% } %>
+const bodyParser  = require('body-parser');
+const path        = require('path');
+const winston     = require('winston');<% if (apiInfoRoute) { %>
+const apiRouterV1 = require('./routes/api_router_v1');<% } if (includeEjsTemplateEngine) { %>
+const appRouter   = require('./routes/app_router');<% } %>
 
-var port        = process.env.PORT || 3000;<% if (useMongoose) { %>
-var dbUrl       = process.env.MONGO_URI || 'mongodb://localhost/<%= appName %>';
-var dbOptions   = { server: { socketOptions: { keepAlive: 1 } } };
+const port        = process.env.PORT || 3000;<% if (useMongoose) { %>
+const dbUrl       = process.env.MONGO_URI || 'mongodb://localhost/<%= appName %>';
+const dbOptions   = { server: { socketOptions: { keepAlive: 1 } } };
 
 // Connect to mongodb
-var connect = function() {
+const connect = function() {
   mongoose.connect(dbUrl, dbOptions);
 };
 
@@ -25,27 +24,34 @@ mongoose.connection.on('disconnected', connect);<% } %>
 global.appRootPath = path.resolve(__dirname);
 
 // App
-var app = express();
+const app = express();
 
-app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url :status' }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));<% if (includeEjsTemplateEngine) { %>
 app.set('view engine', 'ejs');<% } if (apiInfoRoute) { %>
 app.use('/v1/', apiRouterV1);<% } if (includeEjsTemplateEngine) { %>
 app.use('/', appRouter);<% } %>
 
+// Logging
+winston.add(winston.transports.File, { filename: 'logs/<%= appName %>.log' });
+
+app.use(function (req, res, next) {
+  winston.info(req.method, req.url, res.statusCode);
+  next();
+});
+
 // Default error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.send({
     code: err.message,
-    message: err.message
+    message: err.message,
   });
 });
 
-var server = app.listen(port, function() {
-  console.log('Listening on port %d', server.address().port);
+const server = app.listen(port, function () {
+  winston.log('info', 'Listening on port %d', server.address().port);
 });
 
 module.exports = app;

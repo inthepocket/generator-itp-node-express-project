@@ -1,72 +1,78 @@
 'use strict';
 
-var yeoman = require('yeoman-generator');
-var chalk  = require('chalk');
-var yosay  = require('yosay');
-var mkdirp = require('mkdirp');
+const generators = require('yeoman-generator');
+const chalk  = require('chalk');
+const yosay  = require('yosay');
+const mkdirp = require('mkdirp');
 
-module.exports = yeoman.generators.Base.extend({
+module.exports = generators.Base.extend({
 
   prompting: function () {
-    var done = this.async();
+    const done = this.async();
 
     this.log(yosay(
       'Welcome to the terrific ' + chalk.red('ITP Node Express project') + ' generator!'
     ));
 
-    var prompts = [{
+    const prompts = [{
       type: 'input',
       name: 'appName',
       message: 'What is your app\'s name ?',
-      default: 'itp-myProject-node'
+      default: 'itp-myProject-node',
     },
     {
       type: 'confirm',
       name: 'createProjectDirectory',
       message: 'Would you like to create a new directory for your project?',
-      default: true
+      default: true,
     },
     {
       type: 'input',
       name: 'documentationUrl',
       message: 'What is the project url on Confluence?',
-      default: 'https://confluence.itpservices.be/display/itp-myProject-node'
+      default: 'https://confluence.itpservices.be/display/itp-myProject-node',
     },
     {
       type: 'input',
       name: 'sshRepoPath',
       message: 'What is the SSH repo path of the project?',
-      default: 'git@bitbucket.org:inthepocket/itp-myProject-node.git'
+      default: 'git@bitbucket.org:inthepocket/itp-myProject-node.git',
     },
     {
       type: 'confirm',
       name: 'apiInfoRoute',
       message: 'Create test/info api route?',
-      default: true
+      default: true,
     },
     {
       type: 'confirm',
       name: 'useMongoose',
       message: 'Would you like to include Mongoose in your project?',
-      default: true
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'includeMomentJs',
+      message: 'Would you like to include Moment.js in your project?',
+      default: false,
     },
     {
       type: 'confirm',
       name: 'includeEjsTemplateEngine',
       message: 'Would you like to include EJS (template engine) in your project?',
-      default: true
+      default: false,
     },
     {
       type: 'confirm',
       name: 'includeUnitTesting',
       message: 'Would you like to include Unit Testing in your project? ',
-      default: true
+      default: true,
     },
     {
       type: 'confirm',
       name: 'includeCapistrano',
       message: 'Would you like to include Capistrano in your project? ',
-      default: true
+      default: true,
     }];
 
     this.prompt(prompts, function (props) {
@@ -82,9 +88,9 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   writing: {
-    scaffoldFolders: function() {
+    scaffoldFolders: function () {
       this.log('\n');
-      this.log(chalk.blue('- Create project directory structure.'));
+      this.log(chalk.blue('- Create project directory structure'));
 
       mkdirp(this.destinationPath('app'));
       mkdirp(this.destinationPath('config'));
@@ -112,7 +118,7 @@ module.exports = yeoman.generators.Base.extend({
     },
 
     copyMainFiles: function () {
-      this.log(chalk.blue('- Copy main files.'));
+      this.log(chalk.blue('- Copy main files'));
 
       this.template(
         this.templatePath('_README.md'),
@@ -173,7 +179,7 @@ module.exports = yeoman.generators.Base.extend({
     },
 
     copyProjectfiles: function () {
-      this.log(chalk.blue('- Copy project files.'));
+      this.log(chalk.blue('- Copy project files'));
 
       // Config files
       this.template(
@@ -194,6 +200,13 @@ module.exports = yeoman.generators.Base.extend({
         this.props
       );
 
+      // Custom environment variables
+      this.template(
+        this.templatePath('config/_custom-environment-variables.json'),
+        this.destinationPath('config/custom-environment-variables.json'),
+        this.props
+      );
+
       // Views - template engine EJS
       if (this.props.includeEjsTemplateEngine) {
         this.fs.copy(
@@ -207,13 +220,6 @@ module.exports = yeoman.generators.Base.extend({
           this.props
         );
       }
-
-      // Utils
-      this.template(
-        this.templatePath('utils/_logger.js'),
-        this.destinationPath('utils/logger.js'),
-        this.props
-      );
 
       // DB
       if (this.props.useMongoose) {
@@ -254,35 +260,45 @@ module.exports = yeoman.generators.Base.extend({
           this.destinationPath('controllers/api_controller.js')
         );
       }
-    }
+    },
   },
 
   install: function () {
-    this.log(chalk.blue('- Install npm packages'));
+    this.log(chalk.blue('- Install npm packages.'));
 
-    // Install npm packages
     this.spawnCommand('npm', ['config', 'set', 'save-prefix="~"']);
 
-    this.spawnCommand('npm', ['install', 'express', '--save']);
-    this.spawnCommand('npm', ['install', 'ejs', '--save']);
-    this.spawnCommand('npm', ['install', 'config', '--save']);
-    this.spawnCommand('npm', ['install', 'log4js', '--save']);
-    this.spawnCommand('npm', ['install', 'body-parser', '--save']);
-    this.spawnCommand('npm', ['install', 'tv4', '--save']);
-    this.spawnCommand('npm', ['install', 'underscore', '--save']);
-    this.spawnCommand('npm', ['install', 'moment', '--save']);
+    this.npmInstall('express', { save: true });
+    this.npmInstall('config', { save: true });
+    this.npmInstall('winston', { save: true });
+    this.npmInstall('body-parser', { save: true });
+    this.npmInstall('tv4', { save: true });
+
+    if (this.props.includeMomentJs) {
+      this.npmInstall('moment', { save: true });
+    }
+
+    if (this.props.includeEjsTemplateEngine) {
+      this.npmInstall('ejs', { save: true });
+    }
 
     if (this.props.useMongoose) {
-      this.spawnCommand('npm', ['install', 'mongoose', '--save']);
+      this.npmInstall('mongoose', { save: true });
     }
 
     // Dev dependencies
-    this.spawnCommand('npm', ['install', 'gulp', '--save-dev']);
-    this.spawnCommand('npm', ['install', 'gulp-nodemon', '--save-dev']);
+    this.npmInstall('gulp', { 'save-dev': true });
+    this.npmInstall('gulp-nodemon', { 'save-dev': true });
+    this.npmInstall('gulp-apidoc', { 'save-dev': true });
 
     if (this.props.includeUnitTesting) {
-      this.spawnCommand('npm', ['install', 'mocha', '--save-dev']);
-      this.spawnCommand('npm', ['install', 'supertest', '--save-dev']);
+      this.npmInstall('mocha', { 'save-dev': true });
+      this.npmInstall('supertest', { 'save-dev': true });
+      this.npmInstall('chai', { 'save-dev': true });
     }
-  }
+  },
+
+  end: function () {
+    this.log(chalk.blue('- Done 👊'));
+  },
 });

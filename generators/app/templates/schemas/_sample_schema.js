@@ -1,20 +1,20 @@
-var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema   = mongoose.Schema;
 
-var SampleSchema = new Schema({
+const SampleSchema = new Schema({
   name: {
     required: true,
-    type: String
+    type: String,
   },
   createdAt: {
     type: Date,
     default: Date.now,
-    required: true
+    required: true,
   },
   updatedAt:  {
     type: Date,
     default: Date.now,
-    required: true
+    required: true,
   }
 });
 
@@ -22,6 +22,7 @@ SampleSchema.pre('save', function (next) {
   if (!this.isModified('updatedAt')) {
     this.updatedAt = new Date();
   }
+
   next();
 });
 

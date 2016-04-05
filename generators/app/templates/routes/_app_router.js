@@ -1,10 +1,10 @@
-var express = require('express');
+const express = require('express');
 
-var router  = express.Router();
+const router  = express.Router();
 
-// App routes
-router.get('/', function(req, res) {
-    res.render('index');
+// Define app routes
+router.get('/', function (req, res) {
+  res.render('index');
 });
 
 module.exports = router;

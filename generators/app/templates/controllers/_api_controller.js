@@ -1,23 +1,44 @@
-var ApiController   = {};
+const config = require('config');
+const winston = require('winston');
 
-var logger          = require('../utils/logger');
-var config          = require('config');
+/**
+ * @api {get} /info  info
+ * @apiVersion 0.1.0
+ * @apiName info
+ * @apiGroup Info
+ * @apiDescription Sample api call
+ *
+ * @apiSuccess {String} appName  Name of the app
+ * @apiSuccess {String} version Api version
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "appName": "itp-myProject-node",
+ *       "version": "v1"
+ *     }
+ */
+const ApiController = {
+  info: function (req, res) {
 
-// Routes
-ApiController.info = function(req, res) {
+    // Test logging
+    winston.info('[ApiController] Info test log');
+    winston.error('[ApiController] Error test log');
 
-  // Test logs
-  logger.info('[ApiController] Info test log');
-  logger.error('[ApiController] Error test log');
+    // Load app name from the config file
+    var appName = 'App name';
 
-  // Load app name from the config file
-  var appName = 'App name';
+    if (config.has('app.name')) {
+      appName = config.get('app.name');
+    }
 
-  if (config.has('app.name')) {
-    appName = config.get('app.name');
-  }
-  
-  res.send(appName + ': v1');
+    const response = {
+      appName: appName,
+      version: 'v1',
+    };
+
+    res.json(response);
+  },
 };
 
 module.exports = ApiController;
