@@ -36,21 +36,21 @@ app.use('/', appRouter);<% } %>
 // Logging
 winston.add(winston.transports.File, { filename: 'logs/<%= appName %>.log' });
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   winston.info(req.method, req.url, res.statusCode);
   next();
 });
 
 // Default error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.send({
     code: err.message,
-    message: err.message
+    message: err.message,
   });
 });
 
-const server = app.listen(port, function() {
+const server = app.listen(port, function () {
   winston.log('info', 'Listening on port %d', server.address().port);
 });
 
