@@ -52,6 +52,12 @@ module.exports = generators.Base.extend({
     },
     {
       type: 'confirm',
+      name: 'includeMomentJs',
+      message: 'Would you like to include Moment.js in your project?',
+      default: false,
+    },
+    {
+      type: 'confirm',
       name: 'includeEjsTemplateEngine',
       message: 'Would you like to include EJS (template engine) in your project?',
       default: false,
@@ -267,7 +273,10 @@ module.exports = generators.Base.extend({
     this.npmInstall('winston', { save: true });
     this.npmInstall('body-parser', { save: true });
     this.npmInstall('tv4', { save: true });
-    this.npmInstall('moment', { save: true });
+
+    if (this.props.includeMomentJs) {
+      this.npmInstall('moment', { save: true });
+    }
 
     if (this.props.includeEjsTemplateEngine) {
       this.npmInstall('ejs', { save: true });
