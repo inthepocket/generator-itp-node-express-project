@@ -1,4 +1,9 @@
-const express     = require('express');<% if (useMongoose) { %>
+<% if (includeNewRelic) { %>// Initialise New Relic if an app name and license key exists
+if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
+  require('newrelic');
+}
+
+<% } %>const express     = require('express');<% if (useMongoose) { %>
 const mongoose    = require('mongoose');<% } %>
 const bodyParser  = require('body-parser');
 const path        = require('path');

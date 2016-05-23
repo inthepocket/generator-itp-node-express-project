@@ -70,6 +70,12 @@ module.exports = generators.Base.extend({
     },
     {
       type: 'confirm',
+      name: 'includeNewRelic',
+      message: 'Would you like to include New Relic in your project? ',
+      default: true,
+    },
+    {
+      type: 'confirm',
       name: 'includeCapistrano',
       message: 'Would you like to include Capistrano in your project? ',
       default: true,
@@ -234,6 +240,14 @@ module.exports = generators.Base.extend({
         );
       }
 
+      // New Relic
+      if (this.props.includeNewRelic) {
+        this.fs.copy(
+          this.templatePath('_newrelic.js'),
+          this.destinationPath('newrelic.js')
+        );
+      }
+
       // Unit testing
       if (this.props.includeUnitTesting) {
         this.fs.copy(
@@ -284,6 +298,10 @@ module.exports = generators.Base.extend({
 
     if (this.props.useMongoose) {
       this.npmInstall('mongoose', { save: true });
+    }
+
+    if (this.props.includeNewRelic) {
+      this.npmInstall('newrelic', { save: true });
     }
 
     // Dev dependencies
