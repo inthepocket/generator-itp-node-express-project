@@ -106,7 +106,7 @@ module.exports = generators.Base.extend({
 
       mkdirp(this.destinationPath('app'));
       mkdirp(this.destinationPath('config'));
-      mkdirp(this.destinationPath('controllers'));
+      mkdirp(this.destinationPath('controllers/v1'));
       mkdirp(this.destinationPath('logs'));
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
@@ -276,8 +276,8 @@ module.exports = generators.Base.extend({
         );
 
         this.fs.copy(
-          this.templatePath('controllers/_api_controller.js'),
-          this.destinationPath('controllers/api_controller.js')
+          this.templatePath('controllers/v1/_default.js'),
+          this.destinationPath('controllers/v1/default.js')
         );
       }
     },
