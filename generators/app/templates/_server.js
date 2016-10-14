@@ -7,9 +7,11 @@ if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
 const mongoose    = require('mongoose');<% } %>
 const bodyParser  = require('body-parser');
 const path        = require('path');
-const winston     = require('winston');<% if (apiInfoRoute) { %>
+const winston     = require('winston');<% if (includeSentry) { %>
+const raven       = require('raven');<% } if (apiInfoRoute) { %>
 const apiRouterV1 = require('./routes/api_router_v1');<% } if (includeEjsTemplateEngine) { %>
 const appRouter   = require('./routes/app_router');<% } %>
+const config      = require('config');
 
 const port        = process.env.PORT || 3000;<% if (useMongoose) { %>
 const dbUrl       = process.env.MONGO_URI || 'mongodb://localhost/<%= appName %>';
@@ -29,7 +31,12 @@ mongoose.connection.on('disconnected', connect);<% } %>
 global.appRootPath = path.resolve(__dirname);
 
 // App
-const app = express();
+const app = express();<% if (includeSentry) { %>
+
+// Sentry exception logging
+if (config.get('sentry.enabled')) {
+  app.use(raven.middleware.express.requestHandler(config.get('sentry.dsn')));
+}<% } %>
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,15 +51,26 @@ winston.add(winston.transports.File, { filename: 'logs/<%= appName %>.log' });
 app.use(function (req, res, next) {
   winston.info(req.method, req.url, res.statusCode);
   next();
-});
+});<% if (includeSentry) { %>
+
+// Sentry exception logging
+if (config.get('sentry.enabled')) {
+  app.use(raven.middleware.express.errorHandler(config.get('sentry.dsn')));
+}<% } %>
 
 // Default error handler
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);
-  res.send({
+  const errorResponse = {
     code: err.message,
     message: err.message,
-  });
+  };<% if (includeSentry) { %>
+
+  if (config.get('sentry.enabled') && res.sentry) {
+    errorResponse.sentryCode = res.sentry;
+  }<% } %>
+
+  res.send(errorResponse);
 });
 
 const server = app.listen(port, function () {

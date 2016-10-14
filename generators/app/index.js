@@ -76,6 +76,12 @@ module.exports = generators.Base.extend({
     },
     {
       type: 'confirm',
+      name: 'includeSentry',
+      message: 'Would you like to include Sentry (exception logging) in your project? ',
+      default: true,
+    },
+    {
+      type: 'confirm',
       name: 'includeCapistrano',
       message: 'Would you like to include Capistrano in your project? ',
       default: true,
@@ -302,6 +308,10 @@ module.exports = generators.Base.extend({
 
     if (this.props.includeNewRelic) {
       this.npmInstall('newrelic', { save: true });
+    }
+
+    if (this.props.includeSentry) {
+      this.npmInstall('raven', { save: true });
     }
 
     // Dev dependencies

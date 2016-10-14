@@ -1,5 +1,9 @@
 {
   "app": {
     "name": "APP_NAME"
-  }
+  }<% if (includeSentry) { %>,
+  "sentry": {
+    "enabled": "SENTRY_ENABLED",
+    "DSN": "SENTRY_DSN"
+  }<% } %>
 }
