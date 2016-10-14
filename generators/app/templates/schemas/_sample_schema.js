@@ -15,10 +15,10 @@ const SampleSchema = new Schema({
     type: Date,
     default: Date.now,
     required: true,
-  }
+  },
 });
 
-SampleSchema.pre('save', function (next) {
+SampleSchema.pre('save', next => {
   if (!this.isModified('updatedAt')) {
     this.updatedAt = new Date();
   }

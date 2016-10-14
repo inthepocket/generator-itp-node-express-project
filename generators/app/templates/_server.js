@@ -18,7 +18,7 @@ const dbUrl       = process.env.MONGO_URI || 'mongodb://localhost/<%= appName %>
 const dbOptions   = { server: { socketOptions: { keepAlive: 1 } } };
 
 // Connect to mongodb
-const connect = function() {
+const connect = () => {
   mongoose.connect(dbUrl, dbOptions);
 };
 
@@ -48,7 +48,7 @@ app.use('/', appRouter);<% } %>
 // Logging
 winston.add(winston.transports.File, { filename: 'logs/<%= appName %>.log' });
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   winston.info(req.method, req.url, res.statusCode);
   next();
 });<% if (includeSentry) { %>
@@ -65,7 +65,7 @@ app.use(function (err, req, res, next) {
     code: err.message,
     message: err.message,
   };<% if (includeSentry) { %>
-
+    
   if (config.get('sentry.enabled') && res.sentry) {
     errorResponse.sentryCode = res.sentry;
   }<% } %>
@@ -73,7 +73,7 @@ app.use(function (err, req, res, next) {
   res.send(errorResponse);
 });
 
-const server = app.listen(port, function () {
+const server = app.listen(port, () => {
   winston.log('info', 'Listening on port %d', server.address().port);
 });
 
