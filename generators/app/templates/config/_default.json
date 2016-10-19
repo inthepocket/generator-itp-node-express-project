@@ -1,5 +1,9 @@
 {
   "app": {
     "name": "<%= appName %>"
-  }
+  }<% if (includeSentry) { %>,
+  "sentry": {
+    "enabled": false,
+    "dsn": "https://xxx:xxx@sentry.io/xxx"
+  }<% } %>
 }
