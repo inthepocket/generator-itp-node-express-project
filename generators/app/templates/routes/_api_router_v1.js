@@ -1,9 +1,9 @@
-const express       = require('express');
-const apiController = require('../controllers/api_controller');
+const express           = require('express');
+const defaultController = require('../controllers/v1/default');
 
 const router = express.Router();
 
 // Define API routes
-router.get('/info', apiController.info);
+router.get('/info', defaultController.info);
 
 module.exports = router;

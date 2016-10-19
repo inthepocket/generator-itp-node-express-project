@@ -76,6 +76,12 @@ module.exports = generators.Base.extend({
     },
     {
       type: 'confirm',
+      name: 'includeSentry',
+      message: 'Would you like to include Sentry (exception logging) in your project? ',
+      default: true,
+    },
+    {
+      type: 'confirm',
       name: 'includeCapistrano',
       message: 'Would you like to include Capistrano in your project? ',
       default: true,
@@ -100,7 +106,7 @@ module.exports = generators.Base.extend({
 
       mkdirp(this.destinationPath('app'));
       mkdirp(this.destinationPath('config'));
-      mkdirp(this.destinationPath('controllers'));
+      mkdirp(this.destinationPath('controllers/v1'));
       mkdirp(this.destinationPath('logs'));
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
@@ -270,8 +276,8 @@ module.exports = generators.Base.extend({
         );
 
         this.fs.copy(
-          this.templatePath('controllers/_api_controller.js'),
-          this.destinationPath('controllers/api_controller.js')
+          this.templatePath('controllers/v1/_default.js'),
+          this.destinationPath('controllers/v1/default.js')
         );
       }
     },
@@ -302,6 +308,10 @@ module.exports = generators.Base.extend({
 
     if (this.props.includeNewRelic) {
       this.npmInstall('newrelic', { save: true });
+    }
+
+    if (this.props.includeSentry) {
+      this.npmInstall('raven', { save: true });
     }
 
     // Dev dependencies

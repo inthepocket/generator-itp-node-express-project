@@ -9,12 +9,12 @@ gulp.task('apidoc', done => {
   }, done);
 });
 
-gulp.task('nodemon', function () {
+gulp.task('nodemon', () => {
   nodemon({
     script: 'server.js',
     ext: 'html js',
     ignore: ['ignored.js'],
-  }).on('restart', function () {
+  }).on('restart', () => {
     console.log('Nodemon: restarted!');
   });
 });
