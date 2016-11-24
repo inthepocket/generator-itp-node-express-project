@@ -292,11 +292,7 @@ module.exports = generators.Base.extend({
 
     this.spawnCommand('npm', ['config', 'set', 'save-prefix="~"']);
 
-    this.npmInstall('express', { save: true });
-    this.npmInstall('config', { save: true });
-    this.npmInstall('winston', { save: true });
-    this.npmInstall('body-parser', { save: true });
-    this.npmInstall('tv4', { save: true });
+    this.npmInstall(['express', 'config', 'winston', 'body-parser', 'tv4'], { save: true });
 
     if (this.props.includeMomentJs) {
       this.npmInstall('moment', { save: true });
@@ -319,14 +315,10 @@ module.exports = generators.Base.extend({
     }
 
     // Dev dependencies
-    this.npmInstall('gulp', { 'save-dev': true });
-    this.npmInstall('gulp-nodemon', { 'save-dev': true });
-    this.npmInstall('gulp-apidoc', { 'save-dev': true });
+    this.npmInstall(['gulp', 'gulp-nodemon', 'gulp-apidoc'], { 'save-dev': true });
 
     if (this.props.includeUnitTesting) {
-      this.npmInstall('mocha', { 'save-dev': true });
-      this.npmInstall('supertest', { 'save-dev': true });
-      this.npmInstall('chai', { 'save-dev': true });
+      this.npmInstall(['mocha', 'supertest', 'chai'], { 'save-dev': true });
     }
   },
 
