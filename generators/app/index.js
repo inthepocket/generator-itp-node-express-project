@@ -7,6 +7,9 @@ const mkdirp = require('mkdirp');
 
 module.exports = generators.Base.extend({
 
+  /**
+   * Definition of user prompts
+   */
   prompting: function () {
     const done = this.async();
 
@@ -19,68 +22,57 @@ module.exports = generators.Base.extend({
       name: 'appName',
       message: 'What is your app\'s name ?',
       default: 'itp-myProject-node',
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'createProjectDirectory',
       message: 'Would you like to create a new directory for your project?',
       default: true,
-    },
-    {
+    }, {
       type: 'input',
       name: 'documentationUrl',
       message: 'What is the project url on Confluence?',
       default: 'https://confluence.itpservices.be/display/itp-myProject-node',
-    },
-    {
+    }, {
       type: 'input',
       name: 'sshRepoPath',
       message: 'What is the SSH repo path of the project?',
       default: 'git@bitbucket.org:inthepocket/itp-myProject-node.git',
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'apiInfoRoute',
       message: 'Create test/info api route?',
       default: true,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'useMongoose',
       message: 'Would you like to include Mongoose in your project?',
       default: false,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeMomentJs',
       message: 'Would you like to include Moment.js in your project?',
       default: false,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeEjsTemplateEngine',
       message: 'Would you like to include EJS (template engine) in your project?',
       default: false,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeUnitTesting',
       message: 'Would you like to include Unit Testing in your project? ',
       default: true,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeNewRelic',
       message: 'Would you like to include New Relic in your project? ',
       default: true,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeSentry',
       message: 'Would you like to include Sentry (exception logging) in your project? ',
       default: true,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeCapistrano',
       message: 'Would you like to include Capistrano in your project? ',
@@ -100,6 +92,9 @@ module.exports = generators.Base.extend({
   },
 
   writing: {
+    /**
+     * Folder structure creation
+     */
     scaffoldFolders: function () {
       this.log('\n');
       this.log(chalk.blue('- Create project directory structure'));
@@ -129,6 +124,9 @@ module.exports = generators.Base.extend({
       }
     },
 
+    /**
+     * Copy of general project files
+     */
     copyMainFiles: function () {
       this.log(chalk.blue('- Copy main files'));
 
@@ -190,6 +188,9 @@ module.exports = generators.Base.extend({
       }
     },
 
+    /**
+     * Copy of project files
+     */
     copyProjectfiles: function () {
       this.log(chalk.blue('- Copy project files'));
 
@@ -283,6 +284,9 @@ module.exports = generators.Base.extend({
     },
   },
 
+  /**
+   * Install npm modules
+   */
   install: function () {
     this.log(chalk.blue('- Install npm packages.'));
 
@@ -326,6 +330,9 @@ module.exports = generators.Base.extend({
     }
   },
 
+  /**
+   * fin
+   */
   end: function () {
     this.log(chalk.blue('- Done 👊'));
   },
