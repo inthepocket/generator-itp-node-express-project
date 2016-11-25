@@ -1,0 +1,12 @@
+version: '1'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    network_mode: bridge
+    volumes:
+      - ./:/app
+    ports:
+      - 3000:80

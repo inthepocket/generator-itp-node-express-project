@@ -77,6 +77,11 @@ module.exports = generators.Base.extend({
       name: 'includeCapistrano',
       message: 'Would you like to include Capistrano in your project? ',
       default: true,
+    }, {
+      type: 'confirm',
+      name: 'dockerize',
+      message: 'Would you like to use Docker for your development environment?',
+      default: false,
     }];
 
     this.prompt(prompts, function (props) {
@@ -185,6 +190,13 @@ module.exports = generators.Base.extend({
           this.destinationPath('config/deploy/production.rb'),
           this.props
         );
+      }
+
+      if (this.props.dockerize) {
+        this.fs.copy(
+          this.templatePath('Dockerfile'),
+          this.destinationPath('Dockerfile')
+        )
       }
     },
 
