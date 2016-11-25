@@ -188,7 +188,10 @@ module.exports = generators.Base.extend({
       }
 
       if (this.props.dockerize) {
-        this.copy('Dockerfile', 'Dockerfile');
+        this.copy(
+          ['Dockerfile', 'Dockerfile'],
+          ['docker-compose.yml', 'docker-compose.yml']
+        );
       }
     },
 

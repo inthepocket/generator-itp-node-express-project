@@ -1,4 +1,4 @@
-version: '1'
+version: '2'
 
 services:
   api:
@@ -10,3 +10,9 @@ services:
       - ./:/app
     ports:
       - 3000:80
+    links:
+      - mongo
+
+  mongo:
+    image: mongo
+    network_mode: bridge
