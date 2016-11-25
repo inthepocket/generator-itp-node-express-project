@@ -6,6 +6,36 @@ const yosay  = require('yosay');
 const mkdirp = require('mkdirp');
 
 module.exports = generators.Base.extend({
+  constructor: function () {
+    generators.Base.apply(this, arguments);
+
+    /**
+     * Takes one or more sets of files and copies them to the correct paths
+     */
+    this.copy = function (...args) {
+      let targets = Array.from(args);
+
+      targets = typeof targets[0] === 'string' ? [targets] : targets;
+
+      targets.forEach(target => {
+        this.fs.copy(this.templatePath(target[0]), this.destinationPath(target[1]));
+      });
+    };
+
+    /**
+     * Takes one or more sets of files and templates them at the correct paths
+     */
+    this.makeTemplate = function (...args) {
+      let targets = Array.from(args);
+
+      targets = typeof targets[0] === 'string' ? [targets] : targets;
+
+      targets.forEach(target => {
+        this.log(target);
+        this.template(this.templatePath(target[0]), this.destinationPath(target[1]), this.props);
+      });
+    };
+  },
 
   /**
    * Definition of user prompts
@@ -130,54 +160,31 @@ module.exports = generators.Base.extend({
     },
 
     /**
-     * Takes one or more sets of files and templates them at the correct paths
-     */
-    template: function () {
-      const targets = typeof arguments[0] === string ? [arguments] : arguments;
-
-      targets.forEach(target => {
-        super.template(this.templatePath(target[0]), this.destinationPath(target[1]), this.props);
-      });
-
-    },
-
-    /**
-     * Takes one or more sets of files and copies them to the correct paths
-     */
-    copy: function () {
-      const targets = typeof arguments[0] === string ? [arguments] : arguments;
-
-      targets.forEach(target => {
-        this.fs.copy(this.templatePath(target[0]), this.destinationPath(target[1]));
-      });
-    },
-
-    /**
      * Copy of general project files
      */
     copyMainFiles: function () {
       this.log(chalk.blue('- Copy main files'));
 
-      this.template([
+      this.makeTemplate(
         ['_README.md', 'README.md'],
-        ['_package.json', 'package.json'],
-      ]);
+        ['_package.json', 'package.json']
+      );
 
-      this.copy([
+      this.copy(
         ['_gulpfile.js', 'gulpfile.js'],
         ['editorconfig', '.editorconfig'],
         ['jshintrc', '.jshintrc'],
-        ['gitignore', '.gitignore'],
-      ]);
+        ['gitignore', '.gitignore']
+      );
 
       if (this.props.includeCapistrano) {
         this.copy('_Capfile', 'Capfile');
 
-        this.template([
+        this.makeTemplate(
           ['config/_deploy.rb', 'config/deploy.rb'],
           ['config/deploy/_staging.rb', 'config/deploy/staging.rb'],
-          ['config/deploy/_production.rb', 'config/deploy/production.rb'],
-        ]);
+          ['config/deploy/_production.rb', 'config/deploy/production.rb']
+        );
       }
 
       if (this.props.dockerize) {
@@ -192,26 +199,26 @@ module.exports = generators.Base.extend({
       this.log(chalk.blue('- Copy project files'));
 
       // Config files
-      this.template([
+      this.makeTemplate(
         ['config/_default.json', 'config/default.json'],
         ['config/_staging.json', 'config/staging.json'],
         ['config/_production.json', 'config/production.json'],
-        ['config/_custom-environment-variables.json', 'config/custom-environment-variables.json'],
+        ['config/_custom-environment-variables.json', 'config/custom-environment-variables.json']
       );
 
       // Views - template engine EJS
       if (this.props.includeEjsTemplateEngine) {
         this.copy('routes/_app_router.js', 'routes/app_router.js');
 
-        this.template('views/_index.ejs', 'views/index.ejs');
+        this.makeTemplate('views/_index.ejs', 'views/index.ejs');
       }
 
       // DB
       if (this.props.useMongoose) {
-        this.copy([
+        this.copy(
           ['schemas/_index.js', 'schemas/index.js'],
-          ['schemas/_sample_schema.js', 'schemas/sample_schema.js'],
-        ]);
+          ['schemas/_sample_schema.js', 'schemas/sample_schema.js']
+        );
       }
 
       // New Relic
@@ -225,13 +232,13 @@ module.exports = generators.Base.extend({
       }
 
       // Project files
-      this.template('_server.js', 'server.js');
+      this.makeTemplate('_server.js', 'server.js');
 
       if (this.props.apiInfoRoute) {
-        this.copy([
-          ['routes/_api_router_v1.js', 'routes/api_router_v1.js']
-          ['controllers/v1/_default.js', 'controllers/v1/default.js'],
-        ]);
+        this.copy(
+          ['routes/_api_router_v1.js', 'routes/api_router_v1.js'],
+          ['controllers/v1/_default.js', 'controllers/v1/default.js']
+        );
       }
     },
   },
