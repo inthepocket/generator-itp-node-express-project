@@ -130,73 +130,58 @@ module.exports = generators.Base.extend({
     },
 
     /**
+     * Takes one or more sets of files and templates them at the correct paths
+     */
+    template: function () {
+      const targets = typeof arguments[0] === string ? [arguments] : arguments;
+
+      targets.forEach(target => {
+        super.template(this.templatePath(target[0]), this.destinationPath(target[1]), this.props);
+      });
+
+    },
+
+    /**
+     * Takes one or more sets of files and copies them to the correct paths
+     */
+    copy: function () {
+      const targets = typeof arguments[0] === string ? [arguments] : arguments;
+
+      targets.forEach(target => {
+        this.fs.copy(this.templatePath(target[0]), this.destinationPath(target[1]));
+      });
+    },
+
+    /**
      * Copy of general project files
      */
     copyMainFiles: function () {
       this.log(chalk.blue('- Copy main files'));
 
-      this.template(
-        this.templatePath('_README.md'),
-        this.destinationPath('README.md'),
-        this.props
-      );
+      this.template([
+        ['_README.md', 'README.md'],
+        ['_package.json', 'package.json'],
+      ]);
 
-      this.template(
-        this.templatePath('_package.json'),
-        this.destinationPath('package.json'),
-        this.props
-      );
-
-      this.fs.copy(
-        this.templatePath('_gulpfile.js'),
-        this.destinationPath('gulpfile.js')
-      );
-
-      this.fs.copy(
-        this.templatePath('editorconfig'),
-        this.destinationPath('.editorconfig')
-      );
-
-      this.fs.copy(
-        this.templatePath('jshintrc'),
-        this.destinationPath('.jshintrc')
-      );
-
-      this.fs.copy(
-        this.templatePath('gitignore'),
-        this.destinationPath('.gitignore')
-      );
+      this.copy([
+        ['_gulpfile.js', 'gulpfile.js'],
+        ['editorconfig', '.editorconfig'],
+        ['jshintrc', '.jshintrc'],
+        ['gitignore', '.gitignore'],
+      ]);
 
       if (this.props.includeCapistrano) {
-        this.fs.copy(
-          this.templatePath('_Capfile'),
-          this.destinationPath('Capfile')
-        );
+        this.copy('_Capfile', 'Capfile');
 
-        this.template(
-          this.templatePath('config/_deploy.rb'),
-          this.destinationPath('config/deploy.rb'),
-          this.props
-        );
-
-        this.template(
-          this.templatePath('config/deploy/_staging.rb'),
-          this.destinationPath('config/deploy/staging.rb'),
-          this.props
-        );
-
-        this.template(
-          this.templatePath('config/deploy/_production.rb'),
-          this.destinationPath('config/deploy/production.rb'),
-          this.props
-        );
+        this.template([
+          ['config/_deploy.rb', 'config/deploy.rb'],
+          ['config/deploy/_staging.rb', 'config/deploy/staging.rb'],
+          ['config/deploy/_production.rb', 'config/deploy/production.rb'],
+        ]);
       }
 
       if (this.props.dockerize) {
-        this.fs.copy(
-          this.templatePath('Dockerfile'),
-          this.destinationPath('Dockerfile')
-        )
+        this.copy('Dockerfile', 'Dockerfile');
       }
     },
 
@@ -207,91 +192,46 @@ module.exports = generators.Base.extend({
       this.log(chalk.blue('- Copy project files'));
 
       // Config files
-      this.template(
-        this.templatePath('config/_default.json'),
-        this.destinationPath('config/default.json'),
-        this.props
-      );
-
-      this.template(
-        this.templatePath('config/_staging.json'),
-        this.destinationPath('config/staging.json'),
-        this.props
-      );
-
-      this.template(
-        this.templatePath('config/_production.json'),
-        this.destinationPath('config/production.json'),
-        this.props
-      );
-
-      // Custom environment variables
-      this.template(
-        this.templatePath('config/_custom-environment-variables.json'),
-        this.destinationPath('config/custom-environment-variables.json'),
-        this.props
+      this.template([
+        ['config/_default.json', 'config/default.json'],
+        ['config/_staging.json', 'config/staging.json'],
+        ['config/_production.json', 'config/production.json'],
+        ['config/_custom-environment-variables.json', 'config/custom-environment-variables.json'],
       );
 
       // Views - template engine EJS
       if (this.props.includeEjsTemplateEngine) {
-        this.fs.copy(
-          this.templatePath('routes/_app_router.js'),
-          this.destinationPath('routes/app_router.js')
-        );
+        this.copy('routes/_app_router.js', 'routes/app_router.js');
 
-        this.template(
-          this.templatePath('views/_index.ejs'),
-          this.destinationPath('views/index.ejs'),
-          this.props
-        );
+        this.template('views/_index.ejs', 'views/index.ejs');
       }
 
       // DB
       if (this.props.useMongoose) {
-        this.fs.copy(
-          this.templatePath('schemas/_index.js'),
-          this.destinationPath('schemas/index.js')
-        );
-
-        this.fs.copy(
-          this.templatePath('schemas/_sample_schema.js'),
-          this.destinationPath('schemas/sample_schema.js')
-        );
+        this.copy([
+          ['schemas/_index.js', 'schemas/index.js'],
+          ['schemas/_sample_schema.js', 'schemas/sample_schema.js'],
+        ]);
       }
 
       // New Relic
       if (this.props.includeNewRelic) {
-        this.fs.copy(
-          this.templatePath('_newrelic.js'),
-          this.destinationPath('newrelic.js')
-        );
+        this.copy('_newrelic.js', 'newrelic.js');
       }
 
       // Unit testing
       if (this.props.includeUnitTesting) {
-        this.fs.copy(
-          this.templatePath('test/_sample_test.js'),
-          this.destinationPath('test/sample_test.js')
-        );
+        this.copy('test/_sample_test.js', 'test/sample_test.js');
       }
 
       // Project files
-      this.template(
-        this.templatePath('_server.js'),
-        this.destinationPath('server.js'),
-        this.props
-      );
+      this.template('_server.js', 'server.js');
 
       if (this.props.apiInfoRoute) {
-        this.fs.copy(
-          this.templatePath('routes/_api_router_v1.js'),
-          this.destinationPath('routes/api_router_v1.js')
-        );
-
-        this.fs.copy(
-          this.templatePath('controllers/v1/_default.js'),
-          this.destinationPath('controllers/v1/default.js')
-        );
+        this.copy([
+          ['routes/_api_router_v1.js', 'routes/api_router_v1.js']
+          ['controllers/v1/_default.js', 'controllers/v1/default.js'],
+        ]);
       }
     },
   },
