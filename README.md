@@ -36,7 +36,14 @@ git clone https://github.com/inthepocket/generator-itp-node-express-project
 npm link
 ```
 
-Finally, initiate the generator:
+### Yarn
+
+This generator uses [Yarn](https://yarnpkg.com/) to greatly increase the speed of dependency management. Follow the
+instructions at [https://yarnpkg.com/en/docs/install](https://yarnpkg.com/en/docs/install) to install for your platform.
+
+### Finally
+
+Initiate the generator:
 
 ```bash
 yo itp-node-express-project

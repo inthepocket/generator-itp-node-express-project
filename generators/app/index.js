@@ -284,46 +284,44 @@ module.exports = generators.Base.extend({
   },
 
   install: function () {
+    const yarnPackages = ['add'];
+    const yarnDevPackages = ['add'];
+    
     this.log(chalk.blue('- Install npm packages.'));
 
-    this.spawnCommand('npm', ['config', 'set', 'save-prefix="~"']);
-
-    this.npmInstall('express', { save: true });
-    this.npmInstall('config', { save: true });
-    this.npmInstall('winston', { save: true });
-    this.npmInstall('body-parser', { save: true });
-    this.npmInstall('tv4', { save: true });
+    yarnPackages.push('express', 'config', 'winston', 'body-parser', 'tv4');
 
     if (this.props.includeMomentJs) {
-      this.npmInstall('moment', { save: true });
+      yarnPackages.push('moment');
     }
 
     if (this.props.includeEjsTemplateEngine) {
-      this.npmInstall('ejs', { save: true });
+      yarnPackages.push('ejs');
     }
 
     if (this.props.useMongoose) {
-      this.npmInstall('mongoose', { save: true });
+      yarnPackages.push('mongoose');
     }
 
     if (this.props.includeNewRelic) {
-      this.npmInstall('newrelic', { save: true });
+      yarnPackages.push('newrelic');
     }
 
     if (this.props.includeSentry) {
-      this.npmInstall('raven', { save: true });
+      yarnPackages.push('raven');
     }
 
     // Dev dependencies
-    this.npmInstall('gulp', { 'save-dev': true });
-    this.npmInstall('gulp-nodemon', { 'save-dev': true });
-    this.npmInstall('gulp-apidoc', { 'save-dev': true });
+    yarnDevPackages.push('gulp', 'gulp-nodemon', 'gulp-apidoc');
 
     if (this.props.includeUnitTesting) {
-      this.npmInstall('mocha', { 'save-dev': true });
-      this.npmInstall('supertest', { 'save-dev': true });
-      this.npmInstall('chai', { 'save-dev': true });
+      yarnDevPackages.push('mocha', 'supertest', 'chai');
     }
+
+    yarnDevPackages.push('--dev');
+
+    this.spawnCommandSync('yarn', yarnPackages);
+    this.spawnCommandSync('yarn', yarnDevPackages);
   },
 
   end: function () {
