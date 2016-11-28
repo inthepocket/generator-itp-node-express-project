@@ -31,7 +31,6 @@ module.exports = generators.Base.extend({
       targets = typeof targets[0] === 'string' ? [targets] : targets;
 
       targets.forEach(target => {
-        this.log(target);
         this.template(this.templatePath(target[0]), this.destinationPath(target[1]), this.props);
       });
     };
@@ -190,7 +189,8 @@ module.exports = generators.Base.extend({
       if (this.props.dockerize) {
         this.copy(
           ['Dockerfile', 'Dockerfile'],
-          ['docker-compose.yml', 'docker-compose.yml']
+          ['docker-compose.yml', 'docker-compose.yml'],
+          ['.dockerignore', '.dockerignore']
         );
       }
     },
