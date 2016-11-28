@@ -111,6 +111,12 @@ module.exports = generators.Base.extend({
       name: 'dockerize',
       message: 'Would you like to use Docker for your development environment?',
       default: false,
+    }, {
+      type: 'confirm',
+      name: 'nativeDocker',
+      message: 'Include native dependencies in the Docker image?',
+      default: false,
+      when: answers => answers.dockerize
     }];
 
     this.prompt(prompts, function (props) {
@@ -187,8 +193,9 @@ module.exports = generators.Base.extend({
       }
 
       if (this.props.dockerize) {
+        this.makeTemplate('Dockerfile', 'Dockerfile');
+
         this.copy(
-          ['Dockerfile', 'Dockerfile'],
           ['docker-compose.yml', 'docker-compose.yml'],
           ['.dockerignore', '.dockerignore']
         );

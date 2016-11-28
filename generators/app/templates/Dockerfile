@@ -1,4 +1,4 @@
-FROM docker.itpservices.be/itp/node6-native-alpine
+FROM docker.itpservices.be/itp/node6-<% if (nativeDocker) { %>native-<% } %>alpine
 
 ADD . .
 
