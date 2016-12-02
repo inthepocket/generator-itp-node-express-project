@@ -6,7 +6,39 @@ const yosay  = require('yosay');
 const mkdirp = require('mkdirp');
 
 module.exports = generators.Base.extend({
+  constructor: function () {
+    generators.Base.apply(this, arguments);
 
+    /**
+     * Takes one or more sets of files and copies them to the correct paths
+     */
+    this.copy = function (...args) {
+      let targets = Array.from(args);
+
+      targets = typeof targets[0] === 'string' ? [targets] : targets;
+
+      targets.forEach(target => {
+        this.fs.copy(this.templatePath(target[0]), this.destinationPath(target[1]));
+      });
+    };
+
+    /**
+     * Takes one or more sets of files and templates them at the correct paths
+     */
+    this.makeTemplate = function (...args) {
+      let targets = Array.from(args);
+
+      targets = typeof targets[0] === 'string' ? [targets] : targets;
+
+      targets.forEach(target => {
+        this.template(this.templatePath(target[0]), this.destinationPath(target[1]), this.props);
+      });
+    };
+  },
+
+  /**
+   * Definition of user prompts
+   */
   prompting: function () {
     const done = this.async();
 
@@ -19,72 +51,72 @@ module.exports = generators.Base.extend({
       name: 'appName',
       message: 'What is your app\'s name ?',
       default: 'itp-myProject-node',
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'createProjectDirectory',
       message: 'Would you like to create a new directory for your project?',
       default: true,
-    },
-    {
+    }, {
       type: 'input',
       name: 'documentationUrl',
       message: 'What is the project url on Confluence?',
       default: 'https://confluence.itpservices.be/display/itp-myProject-node',
-    },
-    {
+    }, {
       type: 'input',
       name: 'sshRepoPath',
       message: 'What is the SSH repo path of the project?',
       default: 'git@bitbucket.org:inthepocket/itp-myProject-node.git',
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'apiInfoRoute',
       message: 'Create test/info api route?',
       default: true,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'useMongoose',
       message: 'Would you like to include Mongoose in your project?',
       default: false,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeMomentJs',
       message: 'Would you like to include Moment.js in your project?',
       default: false,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeEjsTemplateEngine',
       message: 'Would you like to include EJS (template engine) in your project?',
       default: false,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeUnitTesting',
       message: 'Would you like to include Unit Testing in your project? ',
       default: true,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeNewRelic',
       message: 'Would you like to include New Relic in your project? ',
       default: true,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeSentry',
       message: 'Would you like to include Sentry (exception logging) in your project? ',
       default: true,
-    },
-    {
+    }, {
       type: 'confirm',
       name: 'includeCapistrano',
       message: 'Would you like to include Capistrano in your project? ',
       default: true,
+    }, {
+      type: 'confirm',
+      name: 'dockerize',
+      message: 'Would you like to use Docker for your development environment?',
+      default: false,
+    }, {
+      type: 'confirm',
+      name: 'nativeDocker',
+      message: 'Include native dependencies in the Docker image?',
+      default: false,
+      when: answers => answers.dockerize
     }];
 
     this.prompt(prompts, function (props) {
@@ -100,6 +132,9 @@ module.exports = generators.Base.extend({
   },
 
   writing: {
+    /**
+     * Folder structure creation
+     */
     scaffoldFolders: function () {
       this.log('\n');
       this.log(chalk.blue('- Create project directory structure'));
@@ -129,160 +164,98 @@ module.exports = generators.Base.extend({
       }
     },
 
+    /**
+     * Copy of general project files
+     */
     copyMainFiles: function () {
       this.log(chalk.blue('- Copy main files'));
 
-      this.template(
-        this.templatePath('_README.md'),
-        this.destinationPath('README.md'),
-        this.props
+      this.makeTemplate(
+        ['_README.md', 'README.md'],
+        ['_package.json', 'package.json']
       );
 
-      this.template(
-        this.templatePath('_package.json'),
-        this.destinationPath('package.json'),
-        this.props
-      );
-
-      this.fs.copy(
-        this.templatePath('_gulpfile.js'),
-        this.destinationPath('gulpfile.js')
-      );
-
-      this.fs.copy(
-        this.templatePath('editorconfig'),
-        this.destinationPath('.editorconfig')
-      );
-
-      this.fs.copy(
-        this.templatePath('jshintrc'),
-        this.destinationPath('.jshintrc')
-      );
-
-      this.fs.copy(
-        this.templatePath('gitignore'),
-        this.destinationPath('.gitignore')
+      this.copy(
+        ['_gulpfile.js', 'gulpfile.js'],
+        ['editorconfig', '.editorconfig'],
+        ['jshintrc', '.jshintrc'],
+        ['gitignore', '.gitignore']
       );
 
       if (this.props.includeCapistrano) {
-        this.fs.copy(
-          this.templatePath('_Capfile'),
-          this.destinationPath('Capfile')
-        );
+        this.copy('_Capfile', 'Capfile');
 
-        this.template(
-          this.templatePath('config/_deploy.rb'),
-          this.destinationPath('config/deploy.rb'),
-          this.props
+        this.makeTemplate(
+          ['config/_deploy.rb', 'config/deploy.rb'],
+          ['config/deploy/_staging.rb', 'config/deploy/staging.rb'],
+          ['config/deploy/_production.rb', 'config/deploy/production.rb']
         );
+      }
 
-        this.template(
-          this.templatePath('config/deploy/_staging.rb'),
-          this.destinationPath('config/deploy/staging.rb'),
-          this.props
-        );
+      if (this.props.dockerize) {
+        this.makeTemplate('Dockerfile', 'Dockerfile');
 
-        this.template(
-          this.templatePath('config/deploy/_production.rb'),
-          this.destinationPath('config/deploy/production.rb'),
-          this.props
+        this.copy(
+          ['docker-compose.yml', 'docker-compose.yml'],
+          ['.dockerignore', '.dockerignore']
         );
       }
     },
 
+    /**
+     * Copy of project files
+     */
     copyProjectfiles: function () {
       this.log(chalk.blue('- Copy project files'));
 
       // Config files
-      this.template(
-        this.templatePath('config/_default.json'),
-        this.destinationPath('config/default.json'),
-        this.props
-      );
-
-      this.template(
-        this.templatePath('config/_staging.json'),
-        this.destinationPath('config/staging.json'),
-        this.props
-      );
-
-      this.template(
-        this.templatePath('config/_production.json'),
-        this.destinationPath('config/production.json'),
-        this.props
-      );
-
-      // Custom environment variables
-      this.template(
-        this.templatePath('config/_custom-environment-variables.json'),
-        this.destinationPath('config/custom-environment-variables.json'),
-        this.props
+      this.makeTemplate(
+        ['config/_default.json', 'config/default.json'],
+        ['config/_staging.json', 'config/staging.json'],
+        ['config/_production.json', 'config/production.json'],
+        ['config/_custom-environment-variables.json', 'config/custom-environment-variables.json']
       );
 
       // Views - template engine EJS
       if (this.props.includeEjsTemplateEngine) {
-        this.fs.copy(
-          this.templatePath('routes/_app_router.js'),
-          this.destinationPath('routes/app_router.js')
-        );
+        this.copy('routes/_app_router.js', 'routes/app_router.js');
 
-        this.template(
-          this.templatePath('views/_index.ejs'),
-          this.destinationPath('views/index.ejs'),
-          this.props
-        );
+        this.makeTemplate('views/_index.ejs', 'views/index.ejs');
       }
 
       // DB
       if (this.props.useMongoose) {
-        this.fs.copy(
-          this.templatePath('schemas/_index.js'),
-          this.destinationPath('schemas/index.js')
-        );
-
-        this.fs.copy(
-          this.templatePath('schemas/_sample_schema.js'),
-          this.destinationPath('schemas/sample_schema.js')
+        this.copy(
+          ['schemas/_index.js', 'schemas/index.js'],
+          ['schemas/_sample_schema.js', 'schemas/sample_schema.js']
         );
       }
 
       // New Relic
       if (this.props.includeNewRelic) {
-        this.fs.copy(
-          this.templatePath('_newrelic.js'),
-          this.destinationPath('newrelic.js')
-        );
+        this.copy('_newrelic.js', 'newrelic.js');
       }
 
       // Unit testing
       if (this.props.includeUnitTesting) {
-        this.fs.copy(
-          this.templatePath('test/_sample_test.js'),
-          this.destinationPath('test/sample_test.js')
-        );
+        this.copy('test/_sample_test.js', 'test/sample_test.js');
       }
 
       // Project files
-      this.template(
-        this.templatePath('_server.js'),
-        this.destinationPath('server.js'),
-        this.props
-      );
+      this.makeTemplate('_server.js', 'server.js');
 
       if (this.props.apiInfoRoute) {
-        this.fs.copy(
-          this.templatePath('routes/_api_router_v1.js'),
-          this.destinationPath('routes/api_router_v1.js')
-        );
-
-        this.fs.copy(
-          this.templatePath('controllers/v1/_default.js'),
-          this.destinationPath('controllers/v1/default.js')
+        this.copy(
+          ['routes/_api_router_v1.js', 'routes/api_router_v1.js'],
+          ['controllers/v1/_default.js', 'controllers/v1/default.js']
         );
       }
     },
   },
 
+  /**
+   * Install npm modules
+   */
   install: function () {
     const yarnPackages = ['add'];
     const yarnDevPackages = ['add'];
@@ -324,6 +297,9 @@ module.exports = generators.Base.extend({
     this.spawnCommandSync('yarn', yarnDevPackages);
   },
 
+  /**
+   * fin
+   */
   end: function () {
     this.log(chalk.blue('- Done 👊'));
   },

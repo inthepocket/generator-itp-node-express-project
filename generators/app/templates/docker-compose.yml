@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    network_mode: bridge
+    volumes:
+      - ./:/app
+    ports:
+      - 3000:80
+    links:
+      - mongo
+
+  mongo:
+    image: mongo
+    network_mode: bridge

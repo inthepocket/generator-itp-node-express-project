@@ -23,11 +23,20 @@ Install npm dependencies
     npm install
 
 ## Run project
+<% if (dockerize) { %>
+This project is using [Docker](http://www.docker.com) for the development environment. Visit the website to install the
+necessary tools, then from the root directory run
 
+    docker-compose up -d
+
+to start the processes as a background task.
+
+<% } else { %>
 This project uses [Gulp](http://gulpjs.com/) as build system. The default task is "dev".
 
     gulp [dev]
 
+<% } %>
 ## Log files
 
 Logging is implemented with [winston](https://github.com/winstonjs/winston) and files are stored in `./logs`
