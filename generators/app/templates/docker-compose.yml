@@ -4,15 +4,14 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile
-    network_mode: bridge
     volumes:
       - ./:/app
     ports:
-      - 3000:80
+      - 80
     links:
+      - mongo
+    depends_on:
       - mongo
 
   mongo:
     image: mongo
-    network_mode: bridge
