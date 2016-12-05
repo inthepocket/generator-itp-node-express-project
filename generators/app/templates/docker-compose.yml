@@ -10,8 +10,6 @@ services:
       - 80
     links:
       - mongo
-    depends_on:
-      - mongo
 
   mongo:
     image: mongo
