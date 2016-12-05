@@ -1,4 +1,5 @@
-<% if (includeNewRelic) { %>// Initialise New Relic if an app name and license key exists
+// Initialise New Relic if an app name and license key exists
+<% if (includeNewRelic) { %>
 if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
   require('newrelic');
 }
@@ -14,7 +15,7 @@ const appRouter   = require('./routes/app_router');<% } %>
 const config      = require('config');
 
 const port        = process.env.PORT || 3000;<% if (useMongoose) { %>
-const dbUrl       = process.env.MONGO_URI || 'mongodb://localhost/<%= appName %>';
+const dbUrl       = process.env.MONGO_URI || 'mongodb://<% if (dockerize) { %>mongo<% } else { %>localhost<% } %>/<%= appName %>';
 const dbOptions   = { server: { socketOptions: { keepAlive: 1 } } };
 
 // Connect to mongodb
