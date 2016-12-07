@@ -48,7 +48,7 @@ after :deploy, :clear_cache do
 			execute :npm, 'install'
 
 			info 'Run Gulp'
-            execute :node, './node_modules/.bin/gulp'
+			execute :node, './node_modules/.bin/gulp'
 
 			info 'Restart the server'
 			execute :bash, '../../reload_nodejs.sh'
