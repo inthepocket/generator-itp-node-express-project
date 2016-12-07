@@ -188,6 +188,7 @@ module.exports = generators.Base.extend({
         this.makeTemplate(
           ['config/_deploy.rb', 'config/deploy.rb'],
           ['config/deploy/_staging.rb', 'config/deploy/staging.rb'],
+          ['config/deploy/_test.rb', 'config/deploy/test.rb'],
           ['config/deploy/_production.rb', 'config/deploy/production.rb']
         );
       }
