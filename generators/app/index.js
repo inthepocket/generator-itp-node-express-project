@@ -158,9 +158,9 @@ module.exports = generators.Base.extend({
 
       this.copy(
         ['editorconfig', '.editorconfig'],
-        ['jshintrc', '.jshintrc'],
-        ['gitignore', '.gitignore']
-      );
+        ['eslintrc', '.eslintrc'],
+        ['eslintignore', '.eslintignore'],
+        ['gitignore', '.gitignore']);
 
       if (this.props.includeCapistrano) {
         this.copy('_Capfile', 'Capfile');
@@ -260,7 +260,8 @@ module.exports = generators.Base.extend({
 
     this.spawnCommandSync('yarn', yarnPackages);
     this.spawnCommandSync('yarn', yarnDevPackages);
-  },
+    this.spawnCommandSync('bash', [this.templatePath('install_airbnb_eslint.sh')]);
+  }
 
   /**
    * fin
