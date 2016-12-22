@@ -64,7 +64,7 @@ task :rollback, :clear_cache do
 			info 'Install node packages'
 			execute :npm, 'install'
 
-      info 'Generate API docs'
+			info 'Generate API docs'
 			execute :npm, 'run apidoc'
 
 			info 'Restart the server'
