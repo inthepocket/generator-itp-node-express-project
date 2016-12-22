@@ -58,11 +58,6 @@ module.exports = generators.Base.extend({
       default: true,
     }, {
       type: 'input',
-      name: 'documentationUrl',
-      message: 'What is the project url on Confluence?',
-      default: 'https://confluence.itpservices.be/display/itp-myProject-node',
-    }, {
-      type: 'input',
       name: 'sshRepoPath',
       message: 'What is the SSH repo path of the project?',
       default: 'git@bitbucket.org:inthepocket/itp-myProject-node.git',

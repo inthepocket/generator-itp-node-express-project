@@ -2,10 +2,6 @@
 
 ## Project setup
 
-<% if (documentationUrl) { %>Documentation on Confluence:
-
-    <%= documentationUrl %>
-<% } %>
 <% if (sshRepoPath) { %>Clone this project:
 
     git clone <%= sshRepoPath %><% } %>
