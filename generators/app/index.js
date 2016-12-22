@@ -1,23 +1,22 @@
-'use strict';
-
-const generators = require('yeoman-generator');
-const chalk  = require('chalk');
-const yosay  = require('yosay');
+const Generator = require('yeoman-generator');
+const chalk = require('chalk');
+const yosay = require('yosay');
 const mkdirp = require('mkdirp');
 
-module.exports = generators.Base.extend({
-  constructor: function () {
-    generators.Base.apply(this, arguments);
+module.exports = class extends Generator {
+
+  constructor(generatorArgs, opts) {
+    super(generatorArgs, opts);
 
     /**
      * Takes one or more sets of files and copies them to the correct paths
      */
-    this.copy = function (...args) {
+    this.copy = (...args) => {
       let targets = Array.from(args);
 
       targets = typeof targets[0] === 'string' ? [targets] : targets;
 
-      targets.forEach(target => {
+      targets.forEach((target) => {
         this.fs.copy(this.templatePath(target[0]), this.destinationPath(target[1]));
       });
     };
@@ -25,26 +24,22 @@ module.exports = generators.Base.extend({
     /**
      * Takes one or more sets of files and templates them at the correct paths
      */
-    this.makeTemplate = function (...args) {
+    this.makeTemplate = (...args) => {
       let targets = Array.from(args);
 
       targets = typeof targets[0] === 'string' ? [targets] : targets;
 
-      targets.forEach(target => {
-        this.template(this.templatePath(target[0]), this.destinationPath(target[1]), this.props);
+      targets.forEach((target) => {
+        this.fs.copyTpl(this.templatePath(target[0]), this.destinationPath(target[1]), this.props);
       });
     };
-  },
+  }
 
   /**
    * Definition of user prompts
    */
-  prompting: function () {
-    const done = this.async();
-
-    this.log(yosay(
-      'Welcome to the terrific ' + chalk.red('ITP Node Express project') + ' generator!'
-    ));
+  prompting() {
+    this.log(yosay(`Welcome to the terrific ${chalk.red('ITP Node Express project')} generator!`));
 
     const prompts = [{
       type: 'input',
@@ -101,26 +96,24 @@ module.exports = generators.Base.extend({
       name: 'nativeDocker',
       message: 'Include native dependencies in the Docker image?',
       default: false,
-      when: answers => answers.dockerize
+      when: answers => answers.dockerize,
     }];
 
-    this.prompt(prompts, function (props) {
+    return this.prompt(prompts).then((props) => {
       this.props = props;
 
       // Set destination root path for project
       if (this.props.createProjectDirectory) {
         this.destinationRoot(this.props.appName);
       }
+    });
+  }
 
-      done();
-    }.bind(this));
-  },
-
-  writing: {
+  writing() {
     /**
      * Folder structure creation
      */
-    scaffoldFolders: function () {
+    const scaffoldFolders = () => {
       this.log('\n');
       this.log(chalk.blue('- Create project directory structure'));
 
@@ -143,18 +136,17 @@ module.exports = generators.Base.extend({
       if (this.props.includeUnitTesting) {
         mkdirp(this.destinationPath('test'));
       }
-    },
+    };
 
     /**
      * Copy of general project files
      */
-    copyMainFiles: function () {
+    const copyMainFiles = () => {
       this.log(chalk.blue('- Copy main files'));
 
       this.makeTemplate(
         ['_README.md', 'README.md'],
-        ['_package.json', 'package.json']
-      );
+        ['_package.json', 'package.json']);
 
       this.copy(
         ['editorconfig', '.editorconfig'],
@@ -169,8 +161,7 @@ module.exports = generators.Base.extend({
           ['config/_deploy.rb', 'config/deploy.rb'],
           ['config/deploy/_staging.rb', 'config/deploy/staging.rb'],
           ['config/deploy/_test.rb', 'config/deploy/test.rb'],
-          ['config/deploy/_production.rb', 'config/deploy/production.rb']
-        );
+          ['config/deploy/_production.rb', 'config/deploy/production.rb']);
       }
 
       if (this.props.dockerize) {
@@ -178,15 +169,14 @@ module.exports = generators.Base.extend({
 
         this.copy(
           ['docker-compose.yml', 'docker-compose.yml'],
-          ['.dockerignore', '.dockerignore']
-        );
+          ['.dockerignore', '.dockerignore']);
       }
-    },
+    };
 
     /**
      * Copy of project files
      */
-    copyProjectfiles: function () {
+    const copyProjectfiles = () => {
       this.log(chalk.blue('- Copy project files'));
 
       // Config files
@@ -200,8 +190,7 @@ module.exports = generators.Base.extend({
       if (this.props.useMongoose) {
         this.copy(
           ['schemas/_index.js', 'schemas/index.js'],
-          ['schemas/_sample_schema.js', 'schemas/sample_schema.js']
-        );
+          ['schemas/_sample_schema.js', 'schemas/sample_schema.js']);
       }
 
       // New Relic
@@ -220,16 +209,19 @@ module.exports = generators.Base.extend({
       if (this.props.apiInfoRoute) {
         this.copy(
           ['routes/_api_router_v1.js', 'routes/api_router_v1.js'],
-          ['controllers/v1/_default.js', 'controllers/v1/default.js']
-        );
+          ['controllers/v1/_default.js', 'controllers/v1/default.js']);
       }
-    },
-  },
+    };
+
+    scaffoldFolders();
+    copyMainFiles();
+    copyProjectfiles();
+  }
 
   /**
    * Install npm modules
    */
-  install: function () {
+  install() {
     const yarnPackages = ['add'];
     const yarnDevPackages = ['add'];
 
@@ -266,7 +258,7 @@ module.exports = generators.Base.extend({
   /**
    * fin
    */
-  end: function () {
+  end() {
     this.log(chalk.blue('- Done 👊'));
-  },
-});
+  }
+};
