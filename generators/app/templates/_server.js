@@ -1,7 +1,9 @@
 // Initialise New Relic if an app name and license key exists
 <% if (includeNewRelic) { %>
 if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
+  /* eslint-disable global-require */
   require('newrelic');
+  /* eslint-enable global-require */
 }
 
 <% } %>const express = require('express');<% if (useMongoose) { %>
@@ -13,9 +15,9 @@ const raven = require('raven');<% } if (apiInfoRoute) { %>
 const apiRouterV1 = require('./routes/api_router_v1');<% } %>
 const config = require('config');
 
-const port        = process.env.PORT || 3000;<% if (useMongoose) { %>
-const dbUrl       = process.env.MONGO_URI || 'mongodb://<% if (dockerize) { %>mongo<% } else { %>localhost<% } %>/<%= appName %>';
-const dbOptions   = { server: { socketOptions: { keepAlive: 1 } } };
+const port = process.env.PORT || 3000;<% if (useMongoose) { %>
+const dbUrl = process.env.MONGO_URI || 'mongodb://<% if (dockerize) { %>mongo<% } else { %>localhost<% } %>/<%= appName %>';
+const dbOptions = { server: { socketOptions: { keepAlive: 1 } } };
 
 // Connect to mongodb
 const connect = () => {
@@ -57,7 +59,7 @@ if (config.get('sentry.enabled')) {
 }<% } %>
 
 // Default error handler
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   res.status(err.status || 500);
   const errorResponse = {
     code: err.message,
@@ -69,6 +71,8 @@ app.use(function (err, req, res, next) {
   }<% } %>
 
   res.send(errorResponse);
+
+  next();
 });
 
 const server = app.listen(port, () => {
