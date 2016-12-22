@@ -157,7 +157,6 @@ module.exports = generators.Base.extend({
       );
 
       this.copy(
-        ['_gulpfile.js', 'gulpfile.js'],
         ['editorconfig', '.editorconfig'],
         ['jshintrc', '.jshintrc'],
         ['gitignore', '.gitignore']
@@ -233,12 +232,10 @@ module.exports = generators.Base.extend({
   install: function () {
     const yarnPackages = ['add'];
     const yarnDevPackages = ['add'];
-    
+
     this.log(chalk.blue('- Install npm packages.'));
 
-    yarnPackages.push('express', 'config', 'winston', 'body-parser', 'tv4');
-
-
+    yarnPackages.push('express', 'config', 'winston', 'body-parser');
 
     if (this.props.useMongoose) {
       yarnPackages.push('mongoose');
@@ -253,7 +250,7 @@ module.exports = generators.Base.extend({
     }
 
     // Dev dependencies
-    yarnDevPackages.push('gulp', 'gulp-nodemon', 'gulp-apidoc');
+    yarnDevPackages.push('nodemon', 'apidoc');
 
     if (this.props.includeUnitTesting) {
       yarnDevPackages.push('mocha', 'supertest', 'chai');

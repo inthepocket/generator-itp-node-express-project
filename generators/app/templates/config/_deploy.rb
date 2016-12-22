@@ -47,8 +47,8 @@ after :deploy, :clear_cache do
 			info 'Install node packages'
 			execute :npm, 'install'
 
-			info 'Run Gulp'
-			execute :node, './node_modules/.bin/gulp'
+			info 'Generate API docs'
+			execute :npm, 'run apidoc'
 
 			info 'Restart the server'
 			execute :bash, '../../reload_nodejs.sh'
@@ -64,8 +64,8 @@ task :rollback, :clear_cache do
 			info 'Install node packages'
 			execute :npm, 'install'
 
-			info 'Run Gulp'
-			execute :node, './node_modules/.bin/gulp'
+      info 'Generate API docs'
+			execute :npm, 'run apidoc'
 
 			info 'Restart the server'
 			execute :bash, '../../reload_nodejs.sh'

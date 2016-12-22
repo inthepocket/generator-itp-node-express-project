@@ -28,9 +28,8 @@ necessary tools, then from the root directory run
 to start the processes as a background task.
 
 <% } else { %>
-This project uses [Gulp](http://gulpjs.com/) as build system. The default task is "dev".
-
-    gulp [dev]
+    npm start
+    npm run watch
 
 <% } %>
 ## Log files
@@ -48,4 +47,4 @@ can be run via:
 
 API responses are documentated using the apidoc tool:
 
-    gulp apidoc
+    npm run apidoc
