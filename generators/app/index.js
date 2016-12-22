@@ -73,16 +73,6 @@ module.exports = generators.Base.extend({
       default: false,
     }, {
       type: 'confirm',
-      name: 'includeMomentJs',
-      message: 'Would you like to include Moment.js in your project?',
-      default: false,
-    }, {
-      type: 'confirm',
-      name: 'includeEjsTemplateEngine',
-      message: 'Would you like to include EJS (template engine) in your project?',
-      default: false,
-    }, {
-      type: 'confirm',
       name: 'includeUnitTesting',
       message: 'Would you like to include Unit Testing in your project? ',
       default: true,
@@ -146,10 +136,6 @@ module.exports = generators.Base.extend({
         mkdirp(this.destinationPath('config/deploy'));
       }
 
-      if (this.props.includeEjsTemplateEngine) {
-        mkdirp(this.destinationPath('views'));
-      }
-
       if (this.props.useMongoose) {
         mkdirp(this.destinationPath('schemas'));
       }
@@ -209,15 +195,7 @@ module.exports = generators.Base.extend({
         ['config/_default.json', 'config/default.json'],
         ['config/_staging.json', 'config/staging.json'],
         ['config/_production.json', 'config/production.json'],
-        ['config/_custom-environment-variables.json', 'config/custom-environment-variables.json']
-      );
-
-      // Views - template engine EJS
-      if (this.props.includeEjsTemplateEngine) {
-        this.copy('routes/_app_router.js', 'routes/app_router.js');
-
-        this.makeTemplate('views/_index.ejs', 'views/index.ejs');
-      }
+        ['config/_custom-environment-variables.json', 'config/custom-environment-variables.json']);
 
       // DB
       if (this.props.useMongoose) {
@@ -260,13 +238,7 @@ module.exports = generators.Base.extend({
 
     yarnPackages.push('express', 'config', 'winston', 'body-parser', 'tv4');
 
-    if (this.props.includeMomentJs) {
-      yarnPackages.push('moment');
-    }
 
-    if (this.props.includeEjsTemplateEngine) {
-      yarnPackages.push('ejs');
-    }
 
     if (this.props.useMongoose) {
       yarnPackages.push('mongoose');
