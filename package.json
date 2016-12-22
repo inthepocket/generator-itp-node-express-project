@@ -11,7 +11,8 @@
     "url": "https://github.com/inthepocket"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "./node_modules/.bin/eslint . || true"
   },
   "files": [
     "generators"
@@ -26,6 +27,9 @@
     "yosay": "~1.1.0"
   },
   "devDependencies": {
+    "eslint": "~3.12.0",
+    "eslint-config-airbnb-base": "~11.0.0",
+    "eslint-plugin-import": "~2.2.0",
     "mocha": "~2.4.5"
   }
 }
