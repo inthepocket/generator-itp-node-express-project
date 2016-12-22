@@ -6,7 +6,7 @@
 
     git clone <%= sshRepoPath %><% } %>
 
-Install Node.js (the minimum expected version for this project is v4)
+Install Node.js (latest LTS)
 
     http://nodejs.org
 
