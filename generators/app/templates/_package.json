@@ -7,7 +7,7 @@
   "scripts": {
     "apidoc": "./node_modules/.bin/apidoc -i controllers/ -o public/docs",<% if (includeUnitTesting) { %>
     "coverage": "./node_modules/.bin/istanbul cover _mocha -- -R spec",<% } %>
-    "lint": "./node_modules/.bin/eslint . || true",
+    "lint": "./node_modules/.bin/eslint . || exit 0",
     "start": "node server.js",<% if (includeUnitTesting) { %>
     "test": "./node_modules/.bin/mocha",<% } %>
     "watch": "./node_modules/.bin/nodemon --inspect server.js"
