@@ -201,6 +201,7 @@ module.exports = class extends Generator {
       // Unit testing
       if (this.props.includeUnitTesting) {
         this.copy('test/_sample_test.js', 'test/sample_test.js');
+        this.makeTemplate('_sonar-project.properties', 'sonar-project.properties');
       }
 
       // Project files
@@ -245,7 +246,7 @@ module.exports = class extends Generator {
     yarnDevPackages.push('nodemon', 'apidoc');
 
     if (this.props.includeUnitTesting) {
-      yarnDevPackages.push('mocha', 'supertest', 'chai');
+      yarnDevPackages.push('mocha', 'supertest', 'chai', 'istanbul');
     }
 
     yarnDevPackages.push('--dev');
