@@ -62,7 +62,7 @@ if (config.get('sentry.enabled')) {
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
   const errorResponse = {
-    code: err.message,
+    code: err.code,
     message: err.message,
   };<% if (includeSentry) { %>
     
