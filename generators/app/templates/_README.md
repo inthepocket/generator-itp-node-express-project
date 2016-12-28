@@ -14,9 +14,14 @@ Install npm
 
     curl http://npmjs.org/install.sh | sh
 
-Install npm dependencies
+Install yarn
 
-    npm install
+    brew update
+    brew install yarn
+
+Install all dependencies
+
+    yarn install
 
 ## Run project
 <% if (dockerize) { %>
