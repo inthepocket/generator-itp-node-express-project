@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "lint": "./node_modules/.bin/eslint . || true"
+    "lint": "./node_modules/.bin/eslint . || exit 0"
   },
   "files": [
     "generators"
