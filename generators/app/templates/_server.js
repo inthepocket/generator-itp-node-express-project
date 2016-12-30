@@ -65,7 +65,7 @@ app.use((err, req, res, next) => {
     code: err.code,
     message: err.message,
   };<% if (includeSentry) { %>
-    
+
   if (config.get('sentry.enabled') && res.sentry) {
     errorResponse.sentryCode = res.sentry;
   }<% } %>

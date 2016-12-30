@@ -38,7 +38,7 @@ to start the processes as a background task.
 ## Log files
 
 Logging is implemented with [winston](https://github.com/winstonjs/winston) and files are stored in `./logs`
-<% if (includeUnitTesting) { %>
+
 ## Unit tests
 
 The test framework [Mocha](http://mochajs.org) is used in this project. Tests are found in `./test` and
@@ -52,7 +52,7 @@ The coverage framework [Istanbul](https://github.com/gotwarlost/istanbul) is use
 can be run via:
 
     npm run coverage
-<% } %>
+
 ## Documentation
 
 API responses are documentated using the apidoc tool:

@@ -68,11 +68,6 @@ module.exports = class extends Generator {
       default: false,
     }, {
       type: 'confirm',
-      name: 'includeUnitTesting',
-      message: 'Would you like to include Unit Testing in your project? ',
-      default: true,
-    }, {
-      type: 'confirm',
       name: 'includeNewRelic',
       message: 'Would you like to include New Relic in your project? ',
       default: true,
@@ -124,6 +119,7 @@ module.exports = class extends Generator {
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
       mkdirp(this.destinationPath('utils'));
+      mkdirp(this.destinationPath('test'));
 
       if (this.props.includeCapistrano) {
         mkdirp(this.destinationPath('config/deploy'));
@@ -131,10 +127,6 @@ module.exports = class extends Generator {
 
       if (this.props.useMongoose) {
         mkdirp(this.destinationPath('schemas'));
-      }
-
-      if (this.props.includeUnitTesting) {
-        mkdirp(this.destinationPath('test'));
       }
     };
 
@@ -199,10 +191,8 @@ module.exports = class extends Generator {
       }
 
       // Unit testing
-      if (this.props.includeUnitTesting) {
-        this.copy('test/_sample_test.js', 'test/sample_test.js');
-        this.makeTemplate('_sonar-project.properties', 'sonar-project.properties');
-      }
+      this.copy('test/_sample_test.js', 'test/sample_test.js');
+      this.makeTemplate('_sonar-project.properties', 'sonar-project.properties');
 
       // Project files
       this.makeTemplate('_server.js', 'server.js');
@@ -243,11 +233,7 @@ module.exports = class extends Generator {
     }
 
     // Dev dependencies
-    yarnDevPackages.push('nodemon', 'apidoc');
-
-    if (this.props.includeUnitTesting) {
-      yarnDevPackages.push('mocha', 'supertest', 'chai', 'istanbul');
-    }
+    yarnDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul');
 
     yarnDevPackages.push('--dev');
 
