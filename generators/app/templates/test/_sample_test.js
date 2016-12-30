@@ -8,7 +8,7 @@ describe('Start sample tests: ', () => {
     it('Should return valid result', () => {
       const result = { foo: 'bar' };
 
-      assert.equal(result.foo, fooData, 'Foo is invalid: ' + result.foo);
+      assert.equal(result.foo, fooData, `Foo is invalid: ${result.foo}`);
     });
   });
 });

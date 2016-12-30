@@ -1,22 +1,23 @@
 // Initialise New Relic if an app name and license key exists
 <% if (includeNewRelic) { %>
 if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
+  /* eslint-disable global-require */
   require('newrelic');
+  /* eslint-enable global-require */
 }
 
-<% } %>const express     = require('express');<% if (useMongoose) { %>
-const mongoose    = require('mongoose');<% } %>
-const bodyParser  = require('body-parser');
-const path        = require('path');
-const winston     = require('winston');<% if (includeSentry) { %>
-const raven       = require('raven');<% } if (apiInfoRoute) { %>
-const apiRouterV1 = require('./routes/api_router_v1');<% } if (includeEjsTemplateEngine) { %>
-const appRouter   = require('./routes/app_router');<% } %>
-const config      = require('config');
+<% } %>const express = require('express');<% if (useMongoose) { %>
+const mongoose = require('mongoose');<% } %>
+const bodyParser = require('body-parser');
+const path = require('path');
+const winston = require('winston');<% if (includeSentry) { %>
+const raven = require('raven');<% } if (apiInfoRoute) { %>
+const apiRouterV1 = require('./routes/api_router_v1');<% } %>
+const config = require('config');
 
-const port        = process.env.PORT || 3000;<% if (useMongoose) { %>
-const dbUrl       = process.env.MONGO_URI || 'mongodb://<% if (dockerize) { %>mongo<% } else { %>localhost<% } %>/<%= appName %>';
-const dbOptions   = { server: { socketOptions: { keepAlive: 1 } } };
+const port = process.env.PORT || 3000;<% if (useMongoose) { %>
+const dbUrl = process.env.MONGO_URI || 'mongodb://<% if (dockerize) { %>mongo<% } else { %>localhost<% } %>/<%= appName %>';
+const dbOptions = { server: { socketOptions: { keepAlive: 1 } } };
 
 // Connect to mongodb
 const connect = () => {
@@ -41,10 +42,8 @@ if (config.get('sentry.enabled')) {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));<% if (includeEjsTemplateEngine) { %>
-app.set('view engine', 'ejs');<% } if (apiInfoRoute) { %>
-app.use('/v1/', apiRouterV1);<% } if (includeEjsTemplateEngine) { %>
-app.use('/', appRouter);<% } %>
+app.use(express.static(path.join(__dirname, 'public')));<% if (apiInfoRoute) { %>
+app.use('/v1/', apiRouterV1);<% } %>
 
 // Logging
 winston.add(winston.transports.File, { filename: 'logs/<%= appName %>.log' });
@@ -60,18 +59,20 @@ if (config.get('sentry.enabled')) {
 }<% } %>
 
 // Default error handler
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   res.status(err.status || 500);
   const errorResponse = {
-    code: err.message,
+    code: err.code,
     message: err.message,
   };<% if (includeSentry) { %>
-    
+
   if (config.get('sentry.enabled') && res.sentry) {
     errorResponse.sentryCode = res.sentry;
   }<% } %>
 
   res.send(errorResponse);
+
+  next();
 });
 
 const server = app.listen(port, () => {
