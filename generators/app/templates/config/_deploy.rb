@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.4.0'
+lock '3.6.1'
 
 set :application, '<%= appName %>'
 set :repo_url, '<%= sshRepoPath %>'
@@ -37,8 +37,8 @@ set :pty, true
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-# set :stages, ["staging", "preproduction", "production"]
-# set :default_stag, "staging"
+set :stages, ["staging", "test", "production"]
+# set :default_stage, "staging"
 
 after :deploy, :clear_cache do
 	on roles(:web) do
@@ -47,8 +47,25 @@ after :deploy, :clear_cache do
 			info 'Install node packages'
 			execute :npm, 'install'
 
-			info 'Run Gulp'
-      execute :node, './node_modules/.bin/gulp'
+			info 'Generate API docs'
+			execute :npm, 'run apidoc'
+
+			info 'Restart the server'
+			execute :bash, '../../reload_nodejs.sh'
+
+		end
+	end
+end
+
+task :rollback, :clear_cache do
+	on roles(:web) do
+		within release_path do
+
+			info 'Install node packages'
+			execute :npm, 'install'
+
+			info 'Generate API docs'
+			execute :npm, 'run apidoc'
 
 			info 'Restart the server'
 			execute :bash, '../../reload_nodejs.sh'
