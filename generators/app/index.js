@@ -1,23 +1,22 @@
-'use strict';
-
-const generators = require('yeoman-generator');
-const chalk  = require('chalk');
-const yosay  = require('yosay');
+const Generator = require('yeoman-generator');
+const chalk = require('chalk');
+const yosay = require('yosay');
 const mkdirp = require('mkdirp');
 
-module.exports = generators.Base.extend({
-  constructor: function () {
-    generators.Base.apply(this, arguments);
+module.exports = class extends Generator {
+
+  constructor(generatorArgs, opts) {
+    super(generatorArgs, opts);
 
     /**
      * Takes one or more sets of files and copies them to the correct paths
      */
-    this.copy = function (...args) {
+    this.copy = (...args) => {
       let targets = Array.from(args);
 
       targets = typeof targets[0] === 'string' ? [targets] : targets;
 
-      targets.forEach(target => {
+      targets.forEach((target) => {
         this.fs.copy(this.templatePath(target[0]), this.destinationPath(target[1]));
       });
     };
@@ -25,26 +24,22 @@ module.exports = generators.Base.extend({
     /**
      * Takes one or more sets of files and templates them at the correct paths
      */
-    this.makeTemplate = function (...args) {
+    this.makeTemplate = (...args) => {
       let targets = Array.from(args);
 
       targets = typeof targets[0] === 'string' ? [targets] : targets;
 
-      targets.forEach(target => {
-        this.template(this.templatePath(target[0]), this.destinationPath(target[1]), this.props);
+      targets.forEach((target) => {
+        this.fs.copyTpl(this.templatePath(target[0]), this.destinationPath(target[1]), this.props);
       });
     };
-  },
+  }
 
   /**
    * Definition of user prompts
    */
-  prompting: function () {
-    const done = this.async();
-
-    this.log(yosay(
-      'Welcome to the terrific ' + chalk.red('ITP Node Express project') + ' generator!'
-    ));
+  prompting() {
+    this.log(yosay(`Welcome to the terrific ${chalk.red('ITP Node Express project')} generator!`));
 
     const prompts = [{
       type: 'input',
@@ -56,11 +51,6 @@ module.exports = generators.Base.extend({
       name: 'createProjectDirectory',
       message: 'Would you like to create a new directory for your project?',
       default: true,
-    }, {
-      type: 'input',
-      name: 'documentationUrl',
-      message: 'What is the project url on Confluence?',
-      default: 'https://confluence.itpservices.be/display/itp-myProject-node',
     }, {
       type: 'input',
       name: 'sshRepoPath',
@@ -76,21 +66,6 @@ module.exports = generators.Base.extend({
       name: 'useMongoose',
       message: 'Would you like to include Mongoose in your project?',
       default: false,
-    }, {
-      type: 'confirm',
-      name: 'includeMomentJs',
-      message: 'Would you like to include Moment.js in your project?',
-      default: false,
-    }, {
-      type: 'confirm',
-      name: 'includeEjsTemplateEngine',
-      message: 'Would you like to include EJS (template engine) in your project?',
-      default: false,
-    }, {
-      type: 'confirm',
-      name: 'includeUnitTesting',
-      message: 'Would you like to include Unit Testing in your project? ',
-      default: true,
     }, {
       type: 'confirm',
       name: 'includeNewRelic',
@@ -116,26 +91,24 @@ module.exports = generators.Base.extend({
       name: 'nativeDocker',
       message: 'Include native dependencies in the Docker image?',
       default: false,
-      when: answers => answers.dockerize
+      when: answers => answers.dockerize,
     }];
 
-    this.prompt(prompts, function (props) {
+    return this.prompt(prompts).then((props) => {
       this.props = props;
 
       // Set destination root path for project
       if (this.props.createProjectDirectory) {
         this.destinationRoot(this.props.appName);
       }
+    });
+  }
 
-      done();
-    }.bind(this));
-  },
-
-  writing: {
+  writing() {
     /**
      * Folder structure creation
      */
-    scaffoldFolders: function () {
+    const scaffoldFolders = () => {
       this.log('\n');
       this.log(chalk.blue('- Create project directory structure'));
 
@@ -146,41 +119,32 @@ module.exports = generators.Base.extend({
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
       mkdirp(this.destinationPath('utils'));
+      mkdirp(this.destinationPath('test'));
 
       if (this.props.includeCapistrano) {
         mkdirp(this.destinationPath('config/deploy'));
       }
 
-      if (this.props.includeEjsTemplateEngine) {
-        mkdirp(this.destinationPath('views'));
-      }
-
       if (this.props.useMongoose) {
         mkdirp(this.destinationPath('schemas'));
       }
-
-      if (this.props.includeUnitTesting) {
-        mkdirp(this.destinationPath('test'));
-      }
-    },
+    };
 
     /**
      * Copy of general project files
      */
-    copyMainFiles: function () {
+    const copyMainFiles = () => {
       this.log(chalk.blue('- Copy main files'));
 
       this.makeTemplate(
         ['_README.md', 'README.md'],
-        ['_package.json', 'package.json']
-      );
+        ['_package.json', 'package.json']);
 
       this.copy(
-        ['_gulpfile.js', 'gulpfile.js'],
         ['editorconfig', '.editorconfig'],
-        ['jshintrc', '.jshintrc'],
-        ['gitignore', '.gitignore']
-      );
+        ['eslintrc', '.eslintrc'],
+        ['eslintignore', '.eslintignore'],
+        ['gitignore', '.gitignore']);
 
       if (this.props.includeCapistrano) {
         this.copy('_Capfile', 'Capfile');
@@ -189,8 +153,7 @@ module.exports = generators.Base.extend({
           ['config/_deploy.rb', 'config/deploy.rb'],
           ['config/deploy/_staging.rb', 'config/deploy/staging.rb'],
           ['config/deploy/_test.rb', 'config/deploy/test.rb'],
-          ['config/deploy/_production.rb', 'config/deploy/production.rb']
-        );
+          ['config/deploy/_production.rb', 'config/deploy/production.rb']);
       }
 
       if (this.props.dockerize) {
@@ -198,15 +161,14 @@ module.exports = generators.Base.extend({
 
         this.copy(
           ['docker-compose.yml', 'docker-compose.yml'],
-          ['.dockerignore', '.dockerignore']
-        );
+          ['.dockerignore', '.dockerignore']);
       }
-    },
+    };
 
     /**
      * Copy of project files
      */
-    copyProjectfiles: function () {
+    const copyProjectfiles = () => {
       this.log(chalk.blue('- Copy project files'));
 
       // Config files
@@ -214,22 +176,13 @@ module.exports = generators.Base.extend({
         ['config/_default.json', 'config/default.json'],
         ['config/_staging.json', 'config/staging.json'],
         ['config/_production.json', 'config/production.json'],
-        ['config/_custom-environment-variables.json', 'config/custom-environment-variables.json']
-      );
-
-      // Views - template engine EJS
-      if (this.props.includeEjsTemplateEngine) {
-        this.copy('routes/_app_router.js', 'routes/app_router.js');
-
-        this.makeTemplate('views/_index.ejs', 'views/index.ejs');
-      }
+        ['config/_custom-environment-variables.json', 'config/custom-environment-variables.json']);
 
       // DB
       if (this.props.useMongoose) {
         this.copy(
           ['schemas/_index.js', 'schemas/index.js'],
-          ['schemas/_sample_schema.js', 'schemas/sample_schema.js']
-        );
+          ['schemas/_sample_schema.js', 'schemas/sample_schema.js']);
       }
 
       // New Relic
@@ -238,9 +191,8 @@ module.exports = generators.Base.extend({
       }
 
       // Unit testing
-      if (this.props.includeUnitTesting) {
-        this.copy('test/_sample_test.js', 'test/sample_test.js');
-      }
+      this.copy('test/_sample_test.js', 'test/sample_test.js');
+      this.makeTemplate('_sonar-project.properties', 'sonar-project.properties');
 
       // Project files
       this.makeTemplate('_server.js', 'server.js');
@@ -248,30 +200,25 @@ module.exports = generators.Base.extend({
       if (this.props.apiInfoRoute) {
         this.copy(
           ['routes/_api_router_v1.js', 'routes/api_router_v1.js'],
-          ['controllers/v1/_default.js', 'controllers/v1/default.js']
-        );
+          ['controllers/v1/_default.js', 'controllers/v1/default.js']);
       }
-    },
-  },
+    };
+
+    scaffoldFolders();
+    copyMainFiles();
+    copyProjectfiles();
+  }
 
   /**
    * Install npm modules
    */
-  install: function () {
+  install() {
     const yarnPackages = ['add'];
     const yarnDevPackages = ['add'];
-    
+
     this.log(chalk.blue('- Install npm packages.'));
 
-    yarnPackages.push('express', 'config', 'winston', 'body-parser', 'tv4');
-
-    if (this.props.includeMomentJs) {
-      yarnPackages.push('moment');
-    }
-
-    if (this.props.includeEjsTemplateEngine) {
-      yarnPackages.push('ejs');
-    }
+    yarnPackages.push('express', 'config', 'winston', 'body-parser');
 
     if (this.props.useMongoose) {
       yarnPackages.push('mongoose');
@@ -286,22 +233,19 @@ module.exports = generators.Base.extend({
     }
 
     // Dev dependencies
-    yarnDevPackages.push('gulp', 'gulp-nodemon', 'gulp-apidoc');
-
-    if (this.props.includeUnitTesting) {
-      yarnDevPackages.push('mocha', 'supertest', 'chai');
-    }
+    yarnDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul');
 
     yarnDevPackages.push('--dev');
 
     this.spawnCommandSync('yarn', yarnPackages);
     this.spawnCommandSync('yarn', yarnDevPackages);
-  },
+    this.spawnCommandSync('bash', [this.templatePath('install_airbnb_eslint.sh')]);
+  }
 
   /**
    * fin
    */
-  end: function () {
+  end() {
     this.log(chalk.blue('- Done 👊'));
-  },
-});
+  }
+};

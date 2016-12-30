@@ -1,4 +1,4 @@
-const config  = require('config');
+const config = require('config');
 const winston = require('winston');
 
 /**
@@ -31,7 +31,7 @@ exports.info = (req, res) => {
   }
 
   res.json({
-    appName: appName,
+    appName,
     version: 'v1',
   });
 };

@@ -1,5 +1,6 @@
 node_modules
 logs
+coverage
 
 .DS_Store
 .idea
