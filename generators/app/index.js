@@ -78,11 +78,6 @@ module.exports = class extends Generator {
       default: true,
     }, {
       type: 'confirm',
-      name: 'includeCapistrano',
-      message: 'Would you like to include Capistrano in your project? ',
-      default: true,
-    }, {
-      type: 'confirm',
       name: 'dockerize',
       message: 'Would you like to use Docker for your development environment?',
       default: false,
@@ -121,10 +116,6 @@ module.exports = class extends Generator {
       mkdirp(this.destinationPath('utils'));
       mkdirp(this.destinationPath('tests'));
 
-      if (this.props.includeCapistrano) {
-        mkdirp(this.destinationPath('config/deploy'));
-      }
-
       if (this.props.useMongoose) {
         mkdirp(this.destinationPath('schemas'));
       }
@@ -145,16 +136,6 @@ module.exports = class extends Generator {
         ['eslintrc', '.eslintrc'],
         ['eslintignore', '.eslintignore'],
         ['gitignore', '.gitignore']);
-
-      if (this.props.includeCapistrano) {
-        this.copy('_Capfile', 'Capfile');
-
-        this.makeTemplate(
-          ['config/_deploy.rb', 'config/deploy.rb'],
-          ['config/deploy/_staging.rb', 'config/deploy/staging.rb'],
-          ['config/deploy/_test.rb', 'config/deploy/test.rb'],
-          ['config/deploy/_production.rb', 'config/deploy/production.rb']);
-      }
 
       if (this.props.dockerize) {
         this.makeTemplate('Dockerfile', 'Dockerfile');
