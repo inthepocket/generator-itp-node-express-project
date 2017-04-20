@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "lint": "./node_modules/.bin/eslint . || exit 0"
+    "lint": "eslint . || exit 0"
   },
   "files": [
     "generators"
@@ -32,9 +32,9 @@
     "yosay": "~1.2.1"
   },
   "devDependencies": {
-    "eslint": "~3.12.0",
-    "eslint-config-airbnb-base": "~11.0.0",
-    "eslint-plugin-import": "~2.2.0",
+    "eslint": "3.15.0",
+    "eslint-config-itp-base": "1.0.1",
+    "eslint-plugin-import": "2.2.0",
     "mocha": "~2.4.5"
   }
 }

@@ -1,6 +1,3 @@
 {
-  "extends": "airbnb-base",
-  "env": {
-    "mocha": true
-  }
+  "extends": "itp-base"
 }
