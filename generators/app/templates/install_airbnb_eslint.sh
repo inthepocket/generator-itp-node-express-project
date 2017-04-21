@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-export PKG=eslint-config-airbnb-base;
+# https://github.com/eslint/eslint/issues/7338
+export PKG=eslint-config-itp-base;
 npm info "$PKG" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g' | xargs yarn add --dev "$PKG"
