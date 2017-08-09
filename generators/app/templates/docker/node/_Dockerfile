@@ -4,4 +4,4 @@ FROM docker.itpservices.be/itp/node6-<% if (nativeDocker) { %>native-<% } %>alpi
 ADD package.json package.json
 RUN npm install
 ADD . .
-EXPOSE 80
+EXPOSE 3000
