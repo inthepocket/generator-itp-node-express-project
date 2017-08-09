@@ -9,7 +9,7 @@ DOCKER_USER = <%= dockerUser %>
 PROJECT_NAME = <%= appName %>
 REPO_SLUG = <%= appName %>
  
-TAG_NODE = $(DOCKER_REPO)/$(DOCKER_USER)/$(PROJECT_NAME)-node6-native-alpine
+TAG_NODE = $(DOCKER_REPO)/$(DOCKER_USER)/$(PROJECT_NAME)-node6-native
  
 DOCKERFILE_NODE = ./docker/node/Dockerfile
  
@@ -24,7 +24,7 @@ clean:
 	-rm -f .build-*
  
 node_modules: package.json
-	docker run --rm --volume=$(PWD):/app -w=/app docker.itpservices.be/itp/node6-native-alpine npm install
+	docker run --rm --volume=$(PWD):/app -w=/app docker.itpservices.be/itp/node-native:6 npm install
  
 dependencies: node_modules
  
@@ -59,8 +59,8 @@ push-latest: push
 	docker push $(TAG_NODE):latest
  
 test: build
-	-docker run --rm --volume=$(PWD):/app docker.itpservices.be/itp/node6-native-alpine npm test
-	-docker run --rm --volume=$(PWD):/app docker.itpservices.be/itp/node6-native-alpine npm run coverage
+	-docker run --rm --volume=$(PWD):/app docker.itpservices.be/itp/node-native:6 npm test
+	-docker run --rm --volume=$(PWD):/app docker.itpservices.be/itp/node-native:6 npm run coverage
  
 lint: node_modules
-	-docker run --rm --volume=$(PWD):/app docker.itpservices.be/itp/node6-native-alpine npm run lint-checkstyle
+	-docker run --rm --volume=$(PWD):/app docker.itpservices.be/itp/node-native:6 npm run lint-checkstyle

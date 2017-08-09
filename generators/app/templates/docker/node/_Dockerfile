@@ -1,4 +1,4 @@
-FROM docker.itpservices.be/itp/node6-<% if (nativeDocker) { %>native-<% } %>alpine
+FROM docker.itpservices.be/itp/node-<% if (nativeDocker) { %>native:<% } %>6
 # use package.json as base layer for npm install
 # This will speed up the installation process because of caching.
 ADD package.json package.json

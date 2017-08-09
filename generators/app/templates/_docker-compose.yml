@@ -2,7 +2,7 @@ version: '2'
 
 services:
   api:
-    image: docker.itpservices.be/itp/node6-<% if (nativeDocker) { %>native-<% } %>alpine
+    image: docker.itpservices.be/itp/node6-<% if (nativeDocker) { %>native:<% } %>6
     env_file: docker.env
     volumes:
       - ./:/app
