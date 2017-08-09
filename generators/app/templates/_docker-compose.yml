@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+  api:
+    image: docker.itpservices.be/itp/node6-<% if (nativeDocker) { %>native-<% } %>alpine
+    env_file: docker.env
+    volumes:
+      - ./:/app
+    ports:
+      - 80
+    links:
+      - mongo
+
+  redis:
+    image:  redis:alpine
+    env_file: docker.env
+
+<% if (useMongoose) { %>
+  mongo:
+    image: mongo
+    env_file: docker.env
+    volumes:
+      - mongodb:/data/db
+    ports:
+      - 27017:27017
+<% } %>
+
+<% if (useMariaDB) { %>
+  mariadb:
+    image: mariadb
+    env_file: docker.env
+    volumes:
+      - mariadb:/var/lib/mysql
+    ports:
+      - 33060:3306
+<% } %>
+    
+volumes:
+<% if (useMongoose) { %>
+  mongodb:
+<% } %>
+<% if (useMariaDB) { %>
+  mariadb:
+<% } %>

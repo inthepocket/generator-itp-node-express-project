@@ -1,0 +1,7 @@
+FROM docker.itpservices.be/itp/node6-<% if (nativeDocker) { %>native-<% } %>alpine
+# use package.json as base layer for npm install
+# This will speed up the installation process because of caching.
+ADD package.json package.json
+RUN npm install
+ADD . .
+EXPOSE 80
