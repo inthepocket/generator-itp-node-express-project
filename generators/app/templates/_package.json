@@ -6,8 +6,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "apidoc": "apidoc -i controllers/ -o public/docs",
-    "coverage": "istanbul cover _mocha -- -R spec || exit 0",
-    "lint": "eslint . || exit 0",
+    "lint-checkstyle": "eslint -f checkstyle . > ./test/checkstyle-result.xml || exit 0",
+    "coverage": "istanbul cover --dir ./test --report cobertura _mocha || exit 0",
     "start": "node server.js",
     "test": "mocha",
     "watch": "nodemon --inspect server.js"
