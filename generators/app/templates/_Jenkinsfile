@@ -1,42 +1,42 @@
 branchName = env.BRANCH_NAME
- 
+	
 // Only build for develop, master, release or a pull request branches
 if (branchName.equals('develop') ||
 	branchName.equals('master') ||
 	branchName.startsWith('release/') ||
 	branchName.startsWith('PR-')) {
- 
+	
 	node('gce&&docker') {
 		try {
- 
+	
 			stage('Checkout') {
 				sh 'printenv'
 				checkout scm
 			}
- 
+	
 			stage('Dependencies') {
 				sh 'make clean'
 				sh 'make dependencies'
 			}
- 
+	
 			stage('Build') {
 				sh 'make build'
 			}
- 
+	
 			stage('Static Code Analysis') {
 				sh 'make lint'
- 
+	
 				step([
 					$class: 'CheckStylePublisher',
 					failedTotalHigh: '250',
 					failedNewHigh: '0',
 				])
 			}
- 
+	
 			stage('Test') {
 				sh 'make test'
 			}
- 
+	
 			stage('SonarQube') {
 				if (branchName.equals('develop')) {
 					withSonarQubeEnv('Sonarqube') {
@@ -45,7 +45,7 @@ if (branchName.equals('develop') ||
 				} else if (branchName.startsWith('PR-')) {
 					// Get pull request ID from branch name
 					pullRequestId = branchName.find(/\d+/)
- 
+	
 					withSonarQubeEnv('Sonarqube') {
 						sh "make sonarqube-scan-pr PULL_REQUEST_ID=$pullRequestId SONAR_EXTRA_PROPS=\"${SONAR_EXTRA_PROPS}\""
 					}
@@ -53,22 +53,22 @@ if (branchName.equals('develop') ||
 					println 'Not a develop or pull request branch. Do not scan on SonarQube.'
 				}
 			}
- 
+	
 			stage('Deploy') {
 				if (branchName.equals('develop') || branchName.startsWith('release/') || branchName.equals('master')) {
 					// Push Docker images to repo
 					println 'Pushing version'
 					sh 'make push-latest'
- 
+	
 					if (branchName.equals('develop')) {
 						// TODO: Deploy on staging
 					}
- 
+	
 				} else {
 					println 'Not a develop, release or master branch. Do not deploy.'
 				}
 			}
- 
+	
 		} catch (Exception e) {
 			println 'Catch exceptions'
 			println e.toString()
