@@ -124,7 +124,7 @@ module.exports = class extends Generator {
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
       mkdirp(this.destinationPath('utils'));
-      mkdirp(this.destinationPath('tests'));
+      mkdirp(this.destinationPath('test'));
 
       if (this.props.useMongoose) {
         mkdirp(this.destinationPath('schemas'));
@@ -196,7 +196,7 @@ module.exports = class extends Generator {
       }
 
       // Unit testing
-      this.copy('tests/_sample_test.js', 'tests/sample_test.js');
+      this.copy('test/_sample_test.js', 'test/sample_test.js');
       this.makeTemplate('_sonar-project.properties', 'sonar-project.properties');
 
       // Project files
@@ -238,7 +238,7 @@ module.exports = class extends Generator {
     }
 
     // Dev dependencies
-    yarnDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul');
+    yarnDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul', 'mocha-junit-reporter');
 
     yarnDevPackages.push('--dev');
 

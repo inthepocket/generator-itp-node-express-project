@@ -13,7 +13,6 @@ const path = require('path');
 const winston = require('winston');<% if (includeSentry) { %>
 const raven = require('raven');<% } if (apiInfoRoute) { %>
 const apiRouterV1 = require('./routes/api_router_v1');<% } %>
-const config = require('config');
 
 const port = process.env.PORT || 3000;<% if (useMongoose) { %>
 const dbUrl = process.env.MONGO_URI || 'mongodb://<% if (dockerize) { %>mongo<% } else { %>localhost<% } %>/<%= appName %>';
