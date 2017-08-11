@@ -29,12 +29,13 @@ if (branchName.equals('develop') ||
 				step([
 					$class: 'CheckStylePublisher',
 					failedTotalHigh: '250',
-					failedNewHigh: '0',
+					failedNewHigh: '5',
 				])
 			}
 	
 			stage('Test') {
 				sh 'make test'
+				step([$class: 'JUnitResultArchiver', testResults: 'test/test-results.xml'])
 			}
 	
 			stage('SonarQube') {
