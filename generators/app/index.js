@@ -68,6 +68,11 @@ module.exports = class extends Generator {
       default: false,
     }, {
       type: 'confirm',
+      name: 'useMariaDB',
+      message: 'Would you like to include MariaDB in your project?',
+      default: false,
+    }, {
+      type: 'confirm',
       name: 'includeNewRelic',
       message: 'Would you like to include New Relic in your project? ',
       default: true,
@@ -87,6 +92,11 @@ module.exports = class extends Generator {
       message: 'Include native dependencies in the Docker image?',
       default: false,
       when: answers => answers.dockerize,
+    }, {
+      type: 'confirm',
+      name: 'includeCIAndCD',
+      message: 'Include Continuous Integration and Continuous Deployment?',
+      default: false,
     }];
 
     return this.prompt(prompts).then((props) => {
@@ -114,10 +124,14 @@ module.exports = class extends Generator {
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
       mkdirp(this.destinationPath('utils'));
-      mkdirp(this.destinationPath('tests'));
+      mkdirp(this.destinationPath('test'));
 
       if (this.props.useMongoose) {
         mkdirp(this.destinationPath('schemas'));
+      }
+
+      if (this.props.includeCIAndCD) {
+        mkdirp(this.destinationPath('docker/node'));
       }
     };
 
@@ -138,11 +152,21 @@ module.exports = class extends Generator {
         ['gitignore', '.gitignore']);
 
       if (this.props.dockerize) {
-        this.makeTemplate('Dockerfile', 'Dockerfile');
+        this.makeTemplate(
+          ['_docker-compose.yml', 'docker-compose.yml'],
+          ['_docker.env', 'docker.env']
+        );
+        this.copy('dockerignore', '.dockerignore');
+      }
 
-        this.copy(
-          ['docker-compose.yml', 'docker-compose.yml'],
-          ['.dockerignore', '.dockerignore']);
+      if (this.props.includeCIAndCD) {
+        this.props.dockerUser = this.props.appName.split('-')[0];
+        this.makeTemplate(
+          ['docker/node/_Dockerfile', 'docker/node/Dockerfile'],
+          ['_Makefile', 'Makefile']
+        );
+        
+        this.copy('_Jenkinsfile', 'Jenkinsfile');
       }
     };
 
@@ -172,7 +196,7 @@ module.exports = class extends Generator {
       }
 
       // Unit testing
-      this.copy('tests/_sample_test.js', 'tests/sample_test.js');
+      this.copy('test/_sample_test.js', 'test/sample_test.js');
       this.makeTemplate('_sonar-project.properties', 'sonar-project.properties');
 
       // Project files
@@ -214,7 +238,7 @@ module.exports = class extends Generator {
     }
 
     // Dev dependencies
-    yarnDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul');
+    yarnDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul', 'mocha-junit-reporter');
 
     yarnDevPackages.push('--dev');
 
