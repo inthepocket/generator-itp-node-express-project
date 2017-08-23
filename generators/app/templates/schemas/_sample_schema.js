@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const Schema   = mongoose.Schema;
+
+const Schema = mongoose.Schema;
 
 const SampleSchema = new Schema({
   name: {
@@ -11,14 +12,14 @@ const SampleSchema = new Schema({
     default: Date.now,
     required: true,
   },
-  updatedAt:  {
+  updatedAt: {
     type: Date,
     default: Date.now,
     required: true,
   },
 });
 
-SampleSchema.pre('save', next => {
+SampleSchema.pre('save', (next) => {
   if (!this.isModified('updatedAt')) {
     this.updatedAt = new Date();
   }
