@@ -9,7 +9,8 @@ if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
 <% } %>const express = require('express');<% if (useMongoose) { %>
 const mongoose = require('mongoose');<% } %>
 const bodyParser = require('body-parser');
-const path = require('path');
+const path = require('path');<% if (includeSentry) { %>
+const config = require('config');<% } %>
 const winston = require('winston');<% if (includeSentry) { %>
 const raven = require('raven');<% } if (apiInfoRoute) { %>
 const apiRouterV1 = require('./routes/api_router_v1');<% } %>

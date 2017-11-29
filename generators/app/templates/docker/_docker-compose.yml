@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  api:
+    image: docker.itpservices.be/itp/node<% if (nativeDocker) { %>-native<% } %>:8
+    env_file: docker.env
+    command: "npm run watch"
+    volumes:
+      - ../:/app
+    ports:
+      - 3000:3000
+    <% if (useMongoose || useMariaDB) { %>links:<% } %><% if (useMongoose) { %>
+      - mongo<% } %><% if (useMariaDB) { %>
+      - mariadb<% } %>
+
+  redis:
+    image:  redis:alpine
+    env_file: docker.env
+
+  <% if (useMongoose) { %>mongo:
+    image: mongo
+    env_file: docker.env
+    volumes:
+      - mongodb:/data/db
+    ports:
+      - 27017:27017<% } %>
+
+  <% if (useMariaDB) { %>mariadb:
+    image: mariadb
+    env_file: docker.env
+    volumes:
+      - mariadb:/var/lib/mysql
+    ports:
+      - 33060:3306<% } %>
+
+<% if (useMongoose || useMariaDB) { %>volumes:<% } %><% if (useMongoose) { %>
+  mongodb:<% } %><% if (useMariaDB) { %>
+  mariadb:<% } %>
