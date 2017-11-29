@@ -4,7 +4,7 @@
 
 <% if (sshRepoPath) { %>Clone this project:
 
-    git clone <%= sshRepoPath %><% } %>
+    $ git clone <%= sshRepoPath %><% } %>
 
 Install Node.js (latest LTS)
 
@@ -12,28 +12,29 @@ Install Node.js (latest LTS)
 
 Install npm
 
-    curl http://npmjs.org/install.sh | sh
-
-Install yarn
-
-    brew update
-    brew install yarn
+    $ curl http://npmjs.org/install.sh | sh
 
 Install all dependencies
 
-    yarn install
+    $ npm install
 
 ## Run project
 <% if (dockerize) { %>
 This project is using [Docker](http://www.docker.com) for the development environment. Visit the website to install the
 necessary tools, then from the root directory run
 
-    docker-compose up -d
+Start project:
+
+    $ docker-compose -f docker/docker-compose.yml up -d
+
+Stop project:
+
+    $ docker-compose -f docker/docker-compose.yml stop
 
 to start the processes as a background task.
 <% } else { %>
-    npm start
-    npm run watch
+    $ npm start
+    $ npm run watch
 <% } %>
 ## Log files
 
@@ -44,17 +45,17 @@ Logging is implemented with [winston](https://github.com/winstonjs/winston) and 
 The test framework [Mocha](http://mochajs.org) is used in this project. Tests are found in `./test` and
 can be run via:
 
-    npm test
+    $ npm test
 
 ## Code coverage
 
 The coverage framework [Istanbul](https://github.com/gotwarlost/istanbul) is used in this project. Reports are found in `./coverage` and
 can be run via:
 
-    npm run coverage
+    $ npm run coverage
 
 ## Documentation
 
 API responses are documentated using the apidoc tool:
 
-    npm run apidoc
+    $ npm run apidoc
