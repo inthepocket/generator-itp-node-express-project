@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api:
-    image: docker.itpservices.be/itp/node<% if (nativeDocker) { %>-native<% } %>:8
+    image: ${TAG_NODE}:${VERSION:-latest}
     env_file: docker.env
     command: "npm run watch"
     volumes:
@@ -14,11 +14,11 @@ services:
       - mariadb<% } %>
 
   redis:
-    image:  redis:alpine
+    image:  redis:4-alpine
     env_file: docker.env
 
   <% if (useMongoose) { %>mongo:
-    image: mongo
+    image: mongo:3.4
     env_file: docker.env
     volumes:
       - mongodb:/data/db
@@ -26,7 +26,7 @@ services:
       - 27017:27017<% } %>
 
   <% if (useMariaDB) { %>mariadb:
-    image: mariadb
+    image: mariadb:10.1
     env_file: docker.env
     volumes:
       - mariadb:/var/lib/mysql

@@ -160,14 +160,13 @@ module.exports = class extends Generator {
       }
 
       this.props.dockerUser = this.props.appName.split('-')[0];
-      this.makeTemplate(['_Makefile', 'Makefile']);
+      this.makeTemplate(
+        ['_Makefile', 'Makefile'],
+        ['docker/node/_Dockerfile', 'docker/node/Dockerfile']
+      );
 
       if (this.props.includeCIAndCD) {
-        this.makeTemplate(
-          ['docker/node/_Dockerfile', 'docker/node/Dockerfile']
-        );
-
-        this.copy('_Jenkinsfile', 'Jenkinsfile');
+        this.makeTemplate('_Jenkinsfile', 'Jenkinsfile');
       }
     };
 

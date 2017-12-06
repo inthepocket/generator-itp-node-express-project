@@ -6,18 +6,6 @@
 
     $ git clone <%= sshRepoPath %><% } %>
 
-Install Node.js (latest LTS)
-
-    http://nodejs.org
-
-Install npm
-
-    $ curl http://npmjs.org/install.sh | sh
-
-Install all dependencies
-
-    $ npm install
-
 ## Run project
 <% if (dockerize) { %>
 This project is using [Docker](http://www.docker.com) for the development environment. Visit the website to install the
@@ -25,11 +13,11 @@ necessary tools, then from the root directory run
 
 Start project:
 
-    $ docker-compose -f docker/docker-compose.yml up -d
+    $ make start
 
 Stop project:
 
-    $ docker-compose -f docker/docker-compose.yml stop
+    $ make stop
 
 to start the processes as a background task.
 <% } else { %>
@@ -45,7 +33,13 @@ Logging is implemented with [winston](https://github.com/winstonjs/winston) and 
 The test framework [Mocha](http://mochajs.org) is used in this project. Tests are found in `./test` and
 can be run via:
 
-    $ npm test
+    $ make test
+
+## Lint project
+
+[ESLint](https://eslint.org) is used in this project and can be run via:
+
+    $ make lint-local
 
 ## Code coverage
 

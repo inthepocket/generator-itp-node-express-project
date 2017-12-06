@@ -2,11 +2,9 @@
 @Library('itp-pipeline-web-jenkins')
 
 def gitUtils = new mobi.inthepocket.utils.GitUtils()
-def versionUtils = new mobi.inthepocket.utils.VersionUtils()
 def packageUtils = new mobi.inthepocket.utils.PackageUtils()
 
 wrapperNode('docker') {
-  def version = ""
   def fullVersion = ""
 
   if (gitUtils.isFeatureBranch() || gitUtils.isBugfixBranch()) {
@@ -18,8 +16,7 @@ wrapperNode('docker') {
     checkout scm
 
     // Parse version number from package.json
-    version = packageUtils.getPackageProperty('version')
-    fullVersion = versionUtils.getFullVersionName(version)
+    fullVersion = packageUtils.getFullPackageVersionName()
   }
 
   stage('Dependencies') {
@@ -48,13 +45,13 @@ wrapperNode('docker') {
 
   stage('SonarQube') {
     withSonarQubeEnv('Sonarqube') {
-      sonarQube(version)
+      sonarQube()
     }
   }
 
   stage('Deploy') {
     if (gitUtils.isDeployBranch()) {
-      deployDocker(fullVersion, ['develop': 'staging', 'master': 'production'], 'client-inthepocket/itp-dashboard/itp-dashboard-deploy')
+      deployDocker(fullVersion, ['develop': 'staging', 'master': 'production'], '<%= appName.toLowerCase() %>-deploy')
     } else {
       echo "Not a develop, release or master branch. Do not deploy."
     }
