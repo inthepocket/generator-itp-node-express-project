@@ -1,66 +1,60 @@
 all: tag
- 
+
 # Parses the version from the package.json file
 VERSION = $(shell cat package.json | grep "version" | sed -e 's/^.*: "\(.*\)".*/\1/')
 PWD = $(shell pwd)
- 
+
 DOCKER_REPO = docker.itpservices.be
 DOCKER_USER = <%= dockerUser %>
-PROJECT_NAME = <%= appName %>
-REPO_SLUG = <%= appName %>
- 
-TAG_NODE = $(DOCKER_REPO)/$(DOCKER_USER)/$(PROJECT_NAME)-node6-native
- 
+PROJECT_NAME = <%= appName.toLowerCase() %>
+COMPOSE_PROJECT_NAME = <%= appName.toLowerCase() %>
+
+TAG_NODE = $(DOCKER_REPO)/$(DOCKER_USER)/$(PROJECT_NAME)-node
+
 DOCKERFILE_NODE = ./docker/node/Dockerfile
- 
+
 NO_CACHE = 1
- 
+
 ifeq ($(NO_CACHE),1)
 	BUILD_NO_CACHE = --no-cache
 endif
- 
+
 clean:
 	-rm -rf node_modules
 	-rm -f .build-*
- 
+
 node_modules: package.json
-	docker run --rm --volume=$(PWD):/app -w=/app docker.itpservices.be/itp/node-native:6 npm install
- 
+	docker run --rm --volume=$(PWD):/app -w=/app docker.itpservices.be/itp/node-native:8 npm install
+
 dependencies: node_modules
- 
-sonarqube-scan:
-	docker run --rm --volume=$(PWD):/data docker.itpservices.be/itp/sonarqube-scanner scan \
-		-Dsonar.bitbucket.repoSlug=$(REPO_SLUG) \
-		-Dsonar.bitbucket.branchName=$(BRANCH_NAME) \
-		$(SONAR_EXTRA_PROPS)
- 
-sonarqube-scan-pr:
-	docker run --rm --volume=$(PWD):/data docker.itpservices.be/itp/sonarqube-scanner scan \
-		-Dsonar.analysis.mode=issues \
-		-Dsonar.bitbucket.accountName=inthepocket \
-		-Dsonar.bitbucket.repoSlug=$(REPO_SLUG) \
-		-Dsonar.bitbucket.pullRequestId=$(PULL_REQUEST_ID) \
-		-Dsonar.bitbucket.minSeverity=MINOR \
-		$(SONAR_EXTRA_PROPS)
- 
+
 .build-node: $(DOCKERFILE_NODE)
-	docker build $(BUILD_NO_CACHE) -f $(DOCKERFILE_NODE) -t $(TAG_NODE) .
+	docker build $(BUILD_NO_CACHE) -f $(DOCKERFILE_NODE) -t $(TAG_NODE):$(VERSION) .
 	touch .build-node
- 
+
 build: dependencies .build-node
- 
-tag: build
-	docker tag $(TAG_NODE) $(TAG_NODE):$(VERSION)
- 
-push: tag
+
+push:
 	docker push $(TAG_NODE):$(VERSION)
- 
-push-latest: push
+
+tag-latest: build
+	docker tag $(TAG_NODE):$(VERSION) $(TAG_NODE):latest
+
+push-latest: tag-latest push
 	docker push $(TAG_NODE):latest
- 
+
 test: build
-	-docker run --rm --volume=$(PWD):/app $(TAG_NODE) npm run test-jenkins
-	-docker run --rm --volume=$(PWD):/app $(TAG_NODE) npm run coverage
- 
-lint: node_modules
-	-docker run --rm --volume=$(PWD):/app $(TAG_NODE) npm run lint-checkstyle
+	-docker run --rm --volume=$(PWD):/app $(TAG_NODE):$(VERSION) npm run test-jenkins
+	-docker run --rm --volume=$(PWD):/app $(TAG_NODE):$(VERSION) npm run coverage
+
+lint: build
+	-docker run --rm --volume=$(PWD):/app $(TAG_NODE):$(VERSION) npm run lint-checkstyle
+
+lint-local: build
+	-docker run --rm --volume=$(PWD):/app $(TAG_NODE):$(VERSION) npm run lint
+
+run: build
+	TAG_NODE=$(TAG_NODE) VERSION=$(VERSION) COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) docker-compose -f docker/docker-compose.yml up -d
+
+stop:
+	TAG_NODE=$(TAG_NODE) VERSION=$(VERSION) COMPOSE_PROJECT_NAME=$(COMPOSE_PROJECT_NAME) docker-compose -f docker/docker-compose.yml stop

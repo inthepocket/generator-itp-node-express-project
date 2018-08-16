@@ -85,7 +85,7 @@ module.exports = class extends Generator {
       type: 'confirm',
       name: 'dockerize',
       message: 'Would you like to use Docker for your development environment?',
-      default: false,
+      default: true,
     }, {
       type: 'confirm',
       name: 'nativeDocker',
@@ -96,7 +96,7 @@ module.exports = class extends Generator {
       type: 'confirm',
       name: 'includeCIAndCD',
       message: 'Include Continuous Integration and Continuous Deployment?',
-      default: false,
+      default: true,
     }];
 
     return this.prompt(prompts).then((props) => {
@@ -153,20 +153,20 @@ module.exports = class extends Generator {
 
       if (this.props.dockerize) {
         this.makeTemplate(
-          ['_docker-compose.yml', 'docker-compose.yml'],
-          ['_docker.env', 'docker.env']
+          ['docker/_docker-compose.yml', 'docker/docker-compose.yml'],
+          ['docker/_docker.env', 'docker/docker.env']
         );
         this.copy('dockerignore', '.dockerignore');
       }
 
+      this.props.dockerUser = this.props.appName.split('-')[0];
+      this.makeTemplate(
+        ['_Makefile', 'Makefile'],
+        ['docker/node/_Dockerfile', 'docker/node/Dockerfile']
+      );
+
       if (this.props.includeCIAndCD) {
-        this.props.dockerUser = this.props.appName.split('-')[0];
-        this.makeTemplate(
-          ['docker/node/_Dockerfile', 'docker/node/Dockerfile'],
-          ['_Makefile', 'Makefile']
-        );
-        
-        this.copy('_Jenkinsfile', 'Jenkinsfile');
+        this.makeTemplate('_Jenkinsfile', 'Jenkinsfile');
       }
     };
 
@@ -218,32 +218,34 @@ module.exports = class extends Generator {
    * Install npm modules
    */
   install() {
-    const yarnPackages = ['add'];
-    const yarnDevPackages = ['add'];
+    const npmPackages = ['install'];
+    const npmDevPackages = ['install'];
 
     this.log(chalk.blue('- Install npm packages.'));
 
-    yarnPackages.push('express', 'config', 'winston', 'body-parser');
+    npmPackages.push('express', 'config', 'winston', 'body-parser');
 
     if (this.props.useMongoose) {
-      yarnPackages.push('mongoose');
+      npmPackages.push('mongoose');
     }
 
     if (this.props.includeNewRelic) {
-      yarnPackages.push('newrelic');
+      npmPackages.push('newrelic');
     }
 
     if (this.props.includeSentry) {
-      yarnPackages.push('raven');
+      npmPackages.push('raven');
     }
 
     // Dev dependencies
-    yarnDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul', 'mocha-junit-reporter');
+    npmDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul', 'mocha-junit-reporter');
 
-    yarnDevPackages.push('--dev');
+    // Save to package.json
+    npmDevPackages.push('--save-dev');
+    npmPackages.push('--save');
 
-    this.spawnCommandSync('yarn', yarnPackages);
-    this.spawnCommandSync('yarn', yarnDevPackages);
+    this.spawnCommandSync('npm', npmPackages);
+    this.spawnCommandSync('npm', npmDevPackages);
     this.spawnCommandSync('bash', [this.templatePath('install_airbnb_eslint.sh')]);
   }
 
