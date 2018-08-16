@@ -1,5 +1,5 @@
 const config = require('config');
-const winston = require('winston');
+const logger = require('winston').loggers.get('default');
 
 /**
  * @api {get} /v1/info  info
@@ -20,8 +20,8 @@ const winston = require('winston');
  */
 exports.info = (req, res) => {
   // Test logging
-  winston.info('[ApiController] Info test log');
-  winston.error('[ApiController] Error test log');
+  logger.info('[ApiController] Info test log');
+  logger.error('[ApiController] Error test log');
 
   // Load app name from the config file
   let appName = 'App name';

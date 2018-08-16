@@ -9,9 +9,9 @@ services:
       - ../:/app
     ports:
       - 3000:3000
-    <% if (useMongoose || useMariaDB) { %>links:<% } %><% if (useMongoose) { %>
-      - mongo<% } %><% if (useMariaDB) { %>
-      - mariadb<% } %>
+    <% if (useMongoose || useMySQL) { %>links:<% } %><% if (useMongoose) { %>
+      - mongo<% } %><% if (useMySQL) { %>
+      - mysql<% } %>
 
   redis:
     image:  redis:4-alpine
@@ -25,14 +25,14 @@ services:
     ports:
       - 27017:27017<% } %>
 
-  <% if (useMariaDB) { %>mariadb:
-    image: mariadb:10.1
+  <% if (useMySQL) { %>mysql:
+    image: mysql:5.7
     env_file: docker.env
     volumes:
-      - mariadb:/var/lib/mysql
+      - mysql:/var/lib/mysql
     ports:
       - 33060:3306<% } %>
 
-<% if (useMongoose || useMariaDB) { %>volumes:<% } %><% if (useMongoose) { %>
-  mongodb:<% } %><% if (useMariaDB) { %>
-  mariadb:<% } %>
+<% if (useMongoose || useMySQL) { %>volumes:<% } %><% if (useMongoose) { %>
+  mongodb:<% } %><% if (useMySQL) { %>
+  mysql:<% } %>

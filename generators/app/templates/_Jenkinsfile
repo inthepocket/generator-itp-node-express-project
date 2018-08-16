@@ -29,7 +29,7 @@ wrapperNode('docker') {
   }
 
   stage('Static Code Analysis') {
-    sh "make lint VERSION=\"${fullVersion}\""
+    sh "make lint-checkstyle VERSION=\"${fullVersion}\""
     checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '', unHealthy: ''
   }
 
@@ -51,9 +51,14 @@ wrapperNode('docker') {
 
   stage('Deploy') {
     if (gitUtils.isDeployBranch()) {
-      deployDocker(fullVersion, ['develop': 'staging', 'master': 'production'], '<%= appName.toLowerCase() %>-deploy')
+      pushImageAndTag(fullVersion)
+
+      // Deploy app
+      // if (gitUtils.isDevelopBranch()) {
+      //   sh "make deploy-dev VERSION=\"${fullVersion}\""
+      // }
     } else {
-      echo "Not a develop, release or master branch. Do not deploy."
+      echo 'Not a develop, release or master branch. Do not deploy or push image.'
     }
   }
 }

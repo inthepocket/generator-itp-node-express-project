@@ -68,14 +68,9 @@ module.exports = class extends Generator {
       default: false,
     }, {
       type: 'confirm',
-      name: 'useMariaDB',
-      message: 'Would you like to include MariaDB in your project?',
+      name: 'useMySQL',
+      message: 'Would you like to include MySQL in your project?',
       default: false,
-    }, {
-      type: 'confirm',
-      name: 'includeNewRelic',
-      message: 'Would you like to include New Relic in your project? ',
-      default: true,
     }, {
       type: 'confirm',
       name: 'includeSentry',
@@ -120,7 +115,6 @@ module.exports = class extends Generator {
       mkdirp(this.destinationPath('app'));
       mkdirp(this.destinationPath('config'));
       mkdirp(this.destinationPath('controllers/v1'));
-      mkdirp(this.destinationPath('logs'));
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
       mkdirp(this.destinationPath('utils'));
@@ -154,15 +148,14 @@ module.exports = class extends Generator {
       if (this.props.dockerize) {
         this.makeTemplate(
           ['docker/_docker-compose.yml', 'docker/docker-compose.yml'],
+          ['docker/node/_Dockerfile', 'docker/node/Dockerfile'],
           ['docker/_docker.env', 'docker/docker.env']
         );
         this.copy('dockerignore', '.dockerignore');
       }
 
-      this.props.dockerUser = this.props.appName.split('-')[0];
       this.makeTemplate(
         ['_Makefile', 'Makefile'],
-        ['docker/node/_Dockerfile', 'docker/node/Dockerfile']
       );
 
       if (this.props.includeCIAndCD) {
@@ -190,14 +183,12 @@ module.exports = class extends Generator {
           ['schemas/_sample_schema.js', 'schemas/sample_schema.js']);
       }
 
-      // New Relic
-      if (this.props.includeNewRelic) {
-        this.copy('_newrelic.js', 'newrelic.js');
-      }
-
       // Unit testing
       this.copy('test/_sample_test.js', 'test/sample_test.js');
       this.makeTemplate('_sonar-project.properties', 'sonar-project.properties');
+
+      // Logging
+      this.copy('utils/_logger.js', 'utils/logger.js');
 
       // Project files
       this.makeTemplate('_server.js', 'server.js');
@@ -229,16 +220,12 @@ module.exports = class extends Generator {
       npmPackages.push('mongoose');
     }
 
-    if (this.props.includeNewRelic) {
-      npmPackages.push('newrelic');
-    }
-
     if (this.props.includeSentry) {
       npmPackages.push('raven');
     }
 
     // Dev dependencies
-    npmDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul', 'mocha-junit-reporter');
+    npmDevPackages.push('nodemon', 'mocha', 'supertest', 'chai', 'istanbul', 'mocha-junit-reporter');
 
     // Save to package.json
     npmDevPackages.push('--save-dev');

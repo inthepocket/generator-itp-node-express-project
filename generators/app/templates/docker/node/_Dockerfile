@@ -1,9 +1,8 @@
-FROM docker.itpservices.be/itp/node<% if (nativeDocker) { %>-native<% } %>:8
+FROM eu.gcr.io/itp-gce-registry/node<% if (nativeDocker) { %>-native<% } %>:8
 
 # use package.json as base layer for npm install
 # This will speed up the installation process because of caching.
 ADD package.json package.json
-
 RUN npm install
 
 ADD . .
