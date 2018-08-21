@@ -1,6 +1,6 @@
 {
   "name": "generator-itp-node-express-project",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Yeoman generator for the ITP Express project",
   "license": "MIT",
   "main": "app/index.js",

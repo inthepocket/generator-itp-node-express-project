@@ -68,14 +68,9 @@ module.exports = class extends Generator {
       default: false,
     }, {
       type: 'confirm',
-      name: 'useMariaDB',
-      message: 'Would you like to include MariaDB in your project?',
+      name: 'useMySQL',
+      message: 'Would you like to include MySQL in your project?',
       default: false,
-    }, {
-      type: 'confirm',
-      name: 'includeNewRelic',
-      message: 'Would you like to include New Relic in your project? ',
-      default: true,
     }, {
       type: 'confirm',
       name: 'includeSentry',
@@ -85,7 +80,7 @@ module.exports = class extends Generator {
       type: 'confirm',
       name: 'dockerize',
       message: 'Would you like to use Docker for your development environment?',
-      default: false,
+      default: true,
     }, {
       type: 'confirm',
       name: 'nativeDocker',
@@ -96,7 +91,7 @@ module.exports = class extends Generator {
       type: 'confirm',
       name: 'includeCIAndCD',
       message: 'Include Continuous Integration and Continuous Deployment?',
-      default: false,
+      default: true,
     }];
 
     return this.prompt(prompts).then((props) => {
@@ -120,7 +115,6 @@ module.exports = class extends Generator {
       mkdirp(this.destinationPath('app'));
       mkdirp(this.destinationPath('config'));
       mkdirp(this.destinationPath('controllers/v1'));
-      mkdirp(this.destinationPath('logs'));
       mkdirp(this.destinationPath('public'));
       mkdirp(this.destinationPath('routes'));
       mkdirp(this.destinationPath('utils'));
@@ -153,20 +147,19 @@ module.exports = class extends Generator {
 
       if (this.props.dockerize) {
         this.makeTemplate(
-          ['_docker-compose.yml', 'docker-compose.yml'],
-          ['_docker.env', 'docker.env']
+          ['docker/_docker-compose.yml', 'docker/docker-compose.yml'],
+          ['docker/node/_Dockerfile', 'docker/node/Dockerfile'],
+          ['docker/_docker.env', 'docker/docker.env']
         );
         this.copy('dockerignore', '.dockerignore');
       }
 
+      this.makeTemplate(
+        ['_Makefile', 'Makefile'],
+      );
+
       if (this.props.includeCIAndCD) {
-        this.props.dockerUser = this.props.appName.split('-')[0];
-        this.makeTemplate(
-          ['docker/node/_Dockerfile', 'docker/node/Dockerfile'],
-          ['_Makefile', 'Makefile']
-        );
-        
-        this.copy('_Jenkinsfile', 'Jenkinsfile');
+        this.makeTemplate('_Jenkinsfile', 'Jenkinsfile');
       }
     };
 
@@ -190,14 +183,12 @@ module.exports = class extends Generator {
           ['schemas/_sample_schema.js', 'schemas/sample_schema.js']);
       }
 
-      // New Relic
-      if (this.props.includeNewRelic) {
-        this.copy('_newrelic.js', 'newrelic.js');
-      }
-
       // Unit testing
       this.copy('test/_sample_test.js', 'test/sample_test.js');
       this.makeTemplate('_sonar-project.properties', 'sonar-project.properties');
+
+      // Logging
+      this.copy('utils/_logger.js', 'utils/logger.js');
 
       // Project files
       this.makeTemplate('_server.js', 'server.js');
@@ -218,32 +209,30 @@ module.exports = class extends Generator {
    * Install npm modules
    */
   install() {
-    const yarnPackages = ['add'];
-    const yarnDevPackages = ['add'];
+    const npmPackages = ['install'];
+    const npmDevPackages = ['install'];
 
     this.log(chalk.blue('- Install npm packages.'));
 
-    yarnPackages.push('express', 'config', 'winston', 'body-parser');
+    npmPackages.push('express', 'config', 'winston', 'body-parser');
 
     if (this.props.useMongoose) {
-      yarnPackages.push('mongoose');
-    }
-
-    if (this.props.includeNewRelic) {
-      yarnPackages.push('newrelic');
+      npmPackages.push('mongoose');
     }
 
     if (this.props.includeSentry) {
-      yarnPackages.push('raven');
+      npmPackages.push('raven');
     }
 
     // Dev dependencies
-    yarnDevPackages.push('nodemon', 'apidoc', 'mocha', 'supertest', 'chai', 'istanbul', 'mocha-junit-reporter');
+    npmDevPackages.push('nodemon', 'mocha', 'supertest', 'chai', 'istanbul', 'mocha-junit-reporter');
 
-    yarnDevPackages.push('--dev');
+    // Save to package.json
+    npmDevPackages.push('--save-dev');
+    npmPackages.push('--save');
 
-    this.spawnCommandSync('yarn', yarnPackages);
-    this.spawnCommandSync('yarn', yarnDevPackages);
+    this.spawnCommandSync('npm', npmPackages);
+    this.spawnCommandSync('npm', npmDevPackages);
     this.spawnCommandSync('bash', [this.templatePath('install_airbnb_eslint.sh')]);
   }
 

@@ -5,15 +5,12 @@
   "main": "server.js",
   "license": "UNLICENSED",
   "scripts": {
-    "apidoc": "apidoc -i controllers/ -o public/docs",
     "lint-checkstyle": "eslint -f checkstyle . > ./test/checkstyle-result.xml || exit 0",
+    "lint": "eslint .",
     "coverage": "istanbul cover --dir ./test --report cobertura _mocha || exit 0",
     "start": "node server.js",
     "test": "NODE_ENV=test mocha --recursive",
     "test-jenkins": "NODE_ENV=jenkins mocha --recursive --timeout 10000 --reporter mocha-junit-reporter --reporter-options mochaFile=./test/test-results.xml || exit 0",
-    "watch": "nodemon --inspect server.js"   
-  },
-  "apidoc": {
-    "title": "<%= appName %>"
+    "watch": "nodemon --inspect server.js"
   }
 }
