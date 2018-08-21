@@ -1,18 +1,10 @@
-// Initialise New Relic if an app name and license key exists
-<% if (includeNewRelic) { %>
-if (process.env.NEW_RELIC_APP_NAME && process.env.NEW_RELIC_LICENSE_KEY) {
-  /* eslint-disable global-require */
-  require('newrelic');
-  /* eslint-enable global-require */
-}
-
-<% } %>const express = require('express');<% if (useMongoose) { %>
+const express = require('express');<% if (useMongoose) { %>
 const mongoose = require('mongoose');<% } %>
 const bodyParser = require('body-parser');
 const path = require('path');<% if (includeSentry) { %>
-const config = require('config');<% } %>
-const winston = require('winston');<% if (includeSentry) { %>
-const raven = require('raven');<% } if (apiInfoRoute) { %>
+const config = require('config');
+const raven = require('raven');<% } %>
+const logger = require('./utils/logger');<% if (apiInfoRoute) { %>
 const apiRouterV1 = require('./routes/api_router_v1');<% } %>
 
 const port = process.env.PORT || 3000;<% if (useMongoose) { %>
@@ -45,11 +37,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));<% if (apiInfoRoute) { %>
 app.use('/v1/', apiRouterV1);<% } %>
 
-// Logging
-winston.add(winston.transports.File, { filename: 'logs/<%= appName %>.log' });
-
 app.use((req, res, next) => {
-  winston.info(req.method, req.url, res.statusCode);
+  logger.info(req.method, req.url, res.statusCode);
   next();
 });<% if (includeSentry) { %>
 
@@ -76,7 +65,7 @@ app.use((err, req, res, next) => {
 });
 
 const server = app.listen(port, () => {
-  winston.log('info', 'Listening on port %d', server.address().port);
+  logger.info(`Listening on port ${server.address().port}`);
 });
 
 module.exports = app;

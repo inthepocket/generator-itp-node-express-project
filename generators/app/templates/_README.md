@@ -13,7 +13,7 @@ necessary tools, then from the root directory run
 
 Start project:
 
-    $ make start
+    $ make run
 
 Stop project:
 
@@ -26,7 +26,7 @@ to start the processes as a background task.
 <% } %>
 ## Log files
 
-Logging is implemented with [winston](https://github.com/winstonjs/winston) and files are stored in `./logs`
+Logging is implemented with [winston](https://github.com/winstonjs/winston)
 
 ## Unit tests
 
@@ -47,9 +47,3 @@ The coverage framework [Istanbul](https://github.com/gotwarlost/istanbul) is use
 can be run via:
 
     $ npm run coverage
-
-## Documentation
-
-API responses are documentated using the apidoc tool:
-
-    $ npm run apidoc
