@@ -1,5 +1,7 @@
 # ITP Node.js/Express project generator
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/inthepocket/generator-itp-node-express-project.svg)](https://greenkeeper.io/)
+
 [![NPM version][npm-version-image]][npm-url] [![MIT License][license-image]][license-url]
 
 ## Getting Started
